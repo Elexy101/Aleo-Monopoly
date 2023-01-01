@@ -1,0 +1,10 @@
+{
+    "program": "shib.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkp6n6GqBANBvFuQTQLnQoKvRn6dfkVph7z8p82KgdUsgN5",
+        "address": "aleo1qne0jtcxjt7depccayyu66nfd4ce5raxze7l7kerpuc8my6zlqgqtztd9l"
+    },
+    "license": "MIT"
+}
