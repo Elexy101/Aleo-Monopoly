@@ -1,4 +1,6 @@
-# shib.aleo
+# Monopoly.aleo
+
+##shib.aleo 
 
 ## Build Guide
 <!-- # 🏦 Monopoly Game -->
