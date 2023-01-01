@@ -1,0 +1,37 @@
+// The program input for shib/src/main.leo
+[main]
+owner : address = aleo1ht2a9q0gsd38j0se4t9lsfulxgqrens2vgzgry3pkvs93xrrzu8s892zn7;
+addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+amt1: u32 = 10000u32;
+amt2: u32 = 10000u32;
+
+[monopoly_buy] //the owner purchasing its first building
+owner : address = aleo1ht2a9q0gsd38j0se4t9lsfulxgqrens2vgzgry3pkvs93xrrzu8s892zn7;
+addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+amt: u32 = 10000u32;
+amt2: u32 = 10000u32;
+
+[monopoly_buy1] //the addr2 purchasing its first building
+owner : address = aleo1ht2a9q0gsd38j0se4t9lsfulxgqrens2vgzgry3pkvs93xrrzu8s892zn7;
+addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+amt: u32 = 8488u32;
+amt2: u32 = 10000u32;
+
+[monopoly_rent] //the owner collect rent from addr2
+owner : address = aleo1ht2a9q0gsd38j0se4t9lsfulxgqrens2vgzgry3pkvs93xrrzu8s892zn7;
+addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+amt: u32 = 8488u32;
+amt2: u32 = 8488u32;
+
+[monopoly_sale] //the owner sale building to another player -> addr2
+owner : address = aleo1ht2a9q0gsd38j0se4t9lsfulxgqrens2vgzgry3pkvs93xrrzu8s892zn7;
+addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+amt: u32 = 8588u32;
+amt2: u32 = 8488u32;
+
+[triangle] 
+a : u32 = 10u32;
+b : u32 = 20u32;
+
+[test_loop]
+
