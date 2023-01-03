@@ -1,5 +1,5 @@
 // The program input for shib/src/main.leo
-[main]
+[monopoly]
 owner : address = aleo1ht2a9q0gsd38j0se4t9lsfulxgqrens2vgzgry3pkvs93xrrzu8s892zn7;
 addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
 amt1: u32 = 10000u32;
