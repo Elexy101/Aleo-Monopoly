@@ -14,7 +14,7 @@ program shib.aleo{
     }
 
     //Build a monopoly game of two players a, b address
-    transition main(owner: address, addr2: address, amt: u32, amt2: u32) -> Buildings{
+    transition monopoly(owner: address, addr2: address, amt: u32, amt2: u32) -> Buildings{
         return Buildings{
             owner: owner,
             addr2: addr2,
