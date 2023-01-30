@@ -14,7 +14,7 @@ This program is a game of two(owner and addr2) where each gets 10,000 NGN to buy
 
 ### User Flow
 1. Each user in the game is issue 10,000 NGN to `buy` a property
-2. The owner may buy a property and `rent` it to the next user(addr2). `rent` cost 100 NGN
+2. The owner may buy a property and `rent` it to the next user(addr2). `rent` cost 150 NGN for addr2, `rent` cost 100 NGN for owner
 3. `Sale` of property is possible when the other addr2 send a request to buy off owner property, doubling his `rent` fee ownership
 
 Note that the program can be easily extended to include addition features such as a `fractional investing` function, which would allow owner to invest partly to other users or owner.
@@ -64,3 +64,8 @@ leo run monopoly_buy
 leo run monopoly_rent
 leo run monopoly_sale
 ```
+
+### import new files
+- purchase.leo
+- rent.leo
+- sale.leo 
