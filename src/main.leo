@@ -194,6 +194,32 @@ program shib.aleo{
 
 
 
+transition monopoly_no_rent (owner: address, addr2: address, amt: u32, addr2_amt: u32, white_color: bool, black_color: bool) -> Buildings{
+        //take rent from owner (-100u32)
+        let owner_no_rent: u32 = amt - 150u32;
+
+        //give rent to owner (+150u32)
+        let addr2_no_rent: u32 = addr2_amt - 100u32;
+        
+        //setting the bool to false by default
+        let bool_no_rent: bool = true;
+
+        let rent : Buildings = Buildings{
+            owner: owner,
+            addr2: addr2,
+            gates: 0u64,
+            amt: owner_no_rent,
+            addr2_amt: addr2_no_rent,
+            white_color: bool_no_rent,
+            black_color: bool_no_rent,
+        };
+        return rent;
+    }
+
+
+
+
+
     transition monopoly_sale (owner: address, addr2: address, amt: u32, addr2_amt: u32, white_color: bool, black_color: bool) -> Buildings{
         //owner amt
         let sale_ownership: u32 = functions.leo/sale_owner(amt);
