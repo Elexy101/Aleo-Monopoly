@@ -88,6 +88,8 @@ Anything aside this no. For rent execute `monopoly_no_rent` function
 
 Have fun playing the game...
 
+#screenshot
+![Screenshot from 2023-02-12 08-59-31](https://user-images.githubusercontent.com/24855083/218329735-f3b4d2d9-08a8-4b9c-b2e7-0881aef7a173.png)
 
 
 
