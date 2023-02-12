@@ -1,33 +1,70 @@
 // The program input for shib/src/main.leo
-[monopoly]
-owner : address = aleo1ht2a9q0gsd38j0se4t9lsfulxgqrens2vgzgry3pkvs93xrrzu8s892zn7;
+[main]
+owner : address = aleo1qne0jtcxjt7depccayyu66nfd4ce5raxze7l7kerpuc8my6zlqgqtztd9l;
 addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
 amt1: u32 = 10000u32;
-amt2: u32 = 10000u32;
+addr2_amt: u32 = 10000u32;
+white_color: bool = false;
+black_color: bool = false;
 
-[monopoly_buy] //the owner purchasing its first building
-owner : address = aleo1ht2a9q0gsd38j0se4t9lsfulxgqrens2vgzgry3pkvs93xrrzu8s892zn7;
+//depending on the user purchases, a user can purchase a land based
+//on the building attributes
+
+[monopoly_owner_buy] //the owner purchasing its first white-color building 
+owner : address = aleo1qne0jtcxjt7depccayyu66nfd4ce5raxze7l7kerpuc8my6zlqgqtztd9l;
 addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
 amt: u32 = 10000u32;
-amt2: u32 = 10000u32;
+addr2_amt: u32 = 10000u32;
+white_color: bool = false;
+black_color: bool = false;
 
-[monopoly_buy1] //the addr2 purchasing its first building
-owner : address = aleo1ht2a9q0gsd38j0se4t9lsfulxgqrens2vgzgry3pkvs93xrrzu8s892zn7;
+[monopoly_addr2_buy] //the addr2 purchasing its first black-color building
+owner : address = aleo1qne0jtcxjt7depccayyu66nfd4ce5raxze7l7kerpuc8my6zlqgqtztd9l;
 addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
-amt: u32 = 8488u32;
-amt2: u32 = 10000u32;
+amt: u32 = 8500u32;
+addr2_amt: u32 = 10000u32;
+white_color: bool = false;
+black_color: bool = false;
 
-[monopoly_rent] //the owner collect rent from addr2
-owner : address = aleo1ht2a9q0gsd38j0se4t9lsfulxgqrens2vgzgry3pkvs93xrrzu8s892zn7;
+
+[monopoly_owner_rent] //the owner collect rent from addr2
+owner : address = aleo1qne0jtcxjt7depccayyu66nfd4ce5raxze7l7kerpuc8my6zlqgqtztd9l;
 addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
-amt: u32 = 8488u32;
-amt2: u32 = 8488u32;
+amt: u32 = 8500u32;
+addr2_amt: u32 = 9000u32;
+white_color: bool = false;
+black_color: bool = false;
+
+
+[monopoly_addr2_rent] //the addr2 collect rent from owner
+owner : address = aleo1qne0jtcxjt7depccayyu66nfd4ce5raxze7l7kerpuc8my6zlqgqtztd9l;
+addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+amt: u32 = 8650u32;
+addr2_amt: u32 = 8850u32;
+white_color: bool = false;
+black_color: bool = false;
+
+
+
+[monopoly_bank_borrow] //the bank will issue `addr2` an amt of 10000u32 extra token
+owner: address = aleo1kkk52quhnxgn2nfrcd9jqk7c9x27c23f2wvw7fyzcze56yahvcgszgttu2;
+receiver: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+bank_amt: u32 = 10000000u32;
+//the receiver is `addr2`
+receiver_amt: u32 = 8850u32;
+interest: u32 = 531u32; //interest rate @ 6% of receiver_amt
+
+
 
 [monopoly_sale] //the owner sale building to another player -> addr2
-owner : address = aleo1ht2a9q0gsd38j0se4t9lsfulxgqrens2vgzgry3pkvs93xrrzu8s892zn7;
+owner : address = aleo1qne0jtcxjt7depccayyu66nfd4ce5raxze7l7kerpuc8my6zlqgqtztd9l;
 addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
 amt: u32 = 8588u32;
-amt2: u32 = 8488u32;
+addr2_amt: u32 = 18319u32;
+white_color: bool = false;
+black_color: bool = false;
+
+
 
 [triangle] 
 a : u32 = 10u32;
