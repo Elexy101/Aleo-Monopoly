@@ -19,9 +19,8 @@
 //Dont cheat my code haha, i will build up on PHP too to deploy this program there, have fun, ~ aleo team
 //==============================================================================================================================
 //=============================================     Powered By Leo Programming    ==============================================
-import purchase.leo;
-import rent.leo;
-import sale.leo;
+import functions.leo;
+
 
 program shib.aleo{
 
@@ -65,12 +64,12 @@ program shib.aleo{
         //set the owner amount based on the attribute rendered
         //white building -> 1,500 token - owner buys 
         //black building -> 1,000 token
-        let color_attr_amt: u32 = amt - purchase.leo/owner_color(amt);
+        let color_attr_amt: u32 = amt - functions.leo/owner_color(amt);
 
         let white_color_set: bool = false;
 
         //setting the boolean attr to owner, if bought, set at `true, otherwise default @ `false`
-        if (purchase.leo/owner_color(amt) == 1500u32){
+        if (functions.leo/owner_color(amt) == 1500u32){
             white_color_set  = true;
         }else{
             white_color_set  = white_color;
@@ -100,12 +99,12 @@ program shib.aleo{
         //set the buyer(addr2) amount based on the attribute rendered
         //white building -> 1,500 token 
         //black building -> 1,000 token - addr2 buys
-        let color_attr_amt: u32 = addr2_amt - purchase.leo/addr2_color(amt);
+        let color_attr_amt: u32 = addr2_amt - functions.leo/addr2_color(amt);
 
         let black_color_set: bool = false;
 
         //setting the boolean attr to owner, if bought, set at `true, otherwise default @ `false`
-        if (purchase.leo/addr2_color(amt) == 1000u32){
+        if (functions.leo/addr2_color(amt) == 1000u32){
             black_color_set  = true;
         }else{
             black_color_set  = black_color;
@@ -133,15 +132,15 @@ program shib.aleo{
     //player a receive rent of 100 token per annum
     transition monopoly_owner_rent (owner: address, addr2: address, amt: u32, addr2_amt: u32, white_color: bool, black_color: bool) -> Buildings{
         //take rent from addr2 (-150u32)
-        let take_rent: u32 = addr2_amt - rent.leo/give_owner_rent(amt);
+        let take_rent: u32 = addr2_amt - functions.leo/give_owner_rent(amt);
 
         //give rent to owner (+150u32)
-        let get_rent: u32 = amt + rent.leo/give_owner_rent(amt);
+        let get_rent: u32 = amt + functions.leo/give_owner_rent(amt);
         
         //setting the bool to false by default
         let bool_get_rent: bool = false;
 
-        if (rent.leo/give_owner_rent(amt)  == 150u32){
+        if (functions.leo/give_owner_rent(amt)  == 150u32){
             bool_get_rent = true;
         }else{
             bool_get_rent = white_color;
@@ -166,15 +165,15 @@ program shib.aleo{
     //====================================================================================================
     transition monopoly_addr2_rent (owner: address, addr2: address, amt: u32, addr2_amt: u32, white_color: bool, black_color: bool) -> Buildings{
         //take rent from owner (-100u32)
-        let take_rent: u32 = amt - rent.leo/give_addr2_rent(amt);
+        let take_rent: u32 = amt - functions.leo/give_addr2_rent(amt);
 
         //give rent to owner (+150u32)
-        let get_rent: u32 = addr2_amt + rent.leo/give_addr2_rent(amt);
+        let get_rent: u32 = addr2_amt + functions.leo/give_addr2_rent(amt);
         
         //setting the bool to false by default
         let bool_get_rent: bool = false;
 
-        if (rent.leo/give_addr2_rent(amt)  == 100u32){
+        if (functions.leo/give_addr2_rent(amt)  == 100u32){
             bool_get_rent = true;
         }else{
             bool_get_rent = black_color;
@@ -197,7 +196,7 @@ program shib.aleo{
 
     transition monopoly_sale (owner: address, addr2: address, amt: u32, addr2_amt: u32, white_color: bool, black_color: bool) -> Buildings{
         //owner amt
-        let sale_ownership: u32 = sale.leo/sale_owner(amt);
+        let sale_ownership: u32 = functions.leo/sale_owner(amt);
 
         //subtract bidding amount from `addr2`
         let new_addr2_amt: u32 = addr2_amt - sale_ownership;
@@ -207,7 +206,7 @@ program shib.aleo{
                 //setting the bool to false by default
         let bool_get_sale: bool = false;
 
-        if (sale.leo/sale_owner(amt)  == 15000u32){
+        if (functions.leo/sale_owner(amt)  == 15000u32){
             bool_get_sale = true;
         }else{
             bool_get_sale = white_color;
