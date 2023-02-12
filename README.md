@@ -66,6 +66,30 @@ leo run monopoly_sale
 ```
 
 ### import new files
-- purchase.leo
-- rent.leo
-- sale.leo 
+- functions.leo
+
+
+### slingshot-testnet3 run
+- you can deploy your program function with the command below
+
+- ``` slingshot pour <address> 100000000 ```
+- ``` slingshot deploy functions.aleo -f 10000000 ```
+- ``` slingshot deploy shib.aleo -f 10000000 ````
+
+
+### Run Aleo-py program
+You can run the aleo-py program to run execution, store record `on-chain` 
+playing the game. 
+In the game, owner & addr2 has a dice number
+`owner dice no. -> 3`
+`addr2 dice no. -> 5`
+
+Anything aside this no. For rent execute `monopoly_no_rent` function 
+
+Have fun playing the game...
+
+
+
+
+### BUG Feedback
+Any bug or any problem, you can DM me or send @ Discord community @AleoHQ :)
