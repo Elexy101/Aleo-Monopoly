@@ -74,7 +74,7 @@ leo run monopoly_sale
 
 - ``` slingshot pour <address> 100000000 ```
 - ``` slingshot deploy functions.aleo -f 10000000 ```
-- ``` slingshot deploy shib.aleo -f 10000000 ````
+- ``` slingshot deploy shib.aleo -f 10000000 ```
 
 
 ### Run Aleo-py program
