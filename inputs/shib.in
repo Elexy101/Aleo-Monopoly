@@ -1,74 +1,88 @@
-// The program input for shib/src/main.leo
-[main]
-owner : address = aleo1qne0jtcxjt7depccayyu66nfd4ce5raxze7l7kerpuc8my6zlqgqtztd9l;
-addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
-amt1: u32 = 10000u32;
-addr2_amt: u32 = 10000u32;
-white_color: bool = false;
-black_color: bool = false;
-
-//depending on the user purchases, a user can purchase a land based
-//on the building attributes
-
-[monopoly_owner_buy] //the owner purchasing its first white-color building 
-owner : address = aleo1qne0jtcxjt7depccayyu66nfd4ce5raxze7l7kerpuc8my6zlqgqtztd9l;
-addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
-amt: u32 = 10000u32;
-addr2_amt: u32 = 10000u32;
-white_color: bool = false;
-black_color: bool = false;
-
-[monopoly_addr2_buy] //the addr2 purchasing its first black-color building
-owner : address = aleo1qne0jtcxjt7depccayyu66nfd4ce5raxze7l7kerpuc8my6zlqgqtztd9l;
-addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
-amt: u32 = 8500u32;
-addr2_amt: u32 = 10000u32;
-white_color: bool = false;
-black_color: bool = false;
+// The program input for /src/main.leo
+[issue] // the caller call in issue of token
+to_address: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+to_amount: u64 = 10000u64;
 
 
-[monopoly_owner_rent] //the owner collect rent from addr2
-owner : address = aleo1qne0jtcxjt7depccayyu66nfd4ce5raxze7l7kerpuc8my6zlqgqtztd9l;
-addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
-amt: u32 = 8500u32;
-addr2_amt: u32 = 9000u32;
-white_color: bool = false;
-black_color: bool = false;
+[monopoly_buy] //the caller purchasing its building
+buy : Buildings = Buildings {
+owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
+amount : 10000u64,
+buildings : 1u64, 
+_nonce: 0group,
+};
+spend_amount: u64 = 1500u64;
 
 
-[monopoly_addr2_rent] //the addr2 collect rent from owner
-owner : address = aleo1qne0jtcxjt7depccayyu66nfd4ce5raxze7l7kerpuc8my6zlqgqtztd9l;
-addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
-amt: u32 = 8650u32;
-addr2_amt: u32 = 8850u32;
-white_color: bool = false;
-black_color: bool = false;
+[monopoly_rent] //the owner collect rent from caller => deduct function in the aleo_monopoly.js
+rent : Buildings = Buildings {
+owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
+amount : 8500u64,
+buildings : 1u64, 
+_nonce: 0group,
+};
+rent_amount: u64 = 150u64;
 
 
+[monopoly_rent2] //the caller collect rent from owner => add function in the aleo_monopoly.js
+rent : Buildings = Buildings {
+    owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
+    amount : 8500u64,
+    buildings : 1u64, 
+    _nonce: 0group,
+};
+rent_amount: u64 = 150u64;
 
-[monopoly_bank_borrow] //the bank will issue `addr2` an amt of 10000u32 extra token
-owner: address = aleo1kkk52quhnxgn2nfrcd9jqk7c9x27c23f2wvw7fyzcze56yahvcgszgttu2;
-receiver: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
-bank_amt: u32 = 10000000u32;
-//the receiver is `addr2`
-receiver_amt: u32 = 8850u32;
-interest: u32 = 531u32; //interest rate @ 6% of receiver_amt
+
+[monopoly_sale] //the caller sale the building to owner for x token
+sale : Buildings = Buildings {
+    owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
+    amount : 8500u64,
+    buildings : 1u64,
+    _nonce : 0group,
+};
+to_address: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+sale_amount: u64 = 10000u64;
 
 
 
-[monopoly_sale] //the owner sale building to another player -> addr2
-owner : address = aleo1qne0jtcxjt7depccayyu66nfd4ce5raxze7l7kerpuc8my6zlqgqtztd9l;
-addr2 : address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
-amt: u32 = 8588u32;
-addr2_amt: u32 = 18319u32;
-white_color: bool = false;
-black_color: bool = false;
+[mystery_card_1] //mystery card 1
+mc1 : Buildings = Buildings {
+    owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
+    amount : 8500u64,
+    buildings : 1u64, 
+_   nonce: 0group,
+};
+token_adder: u64 = 1500u64;
 
 
+[mystery_card_2] //mystery card 2
+mc2 : Buildings = Buildings {
+    owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
+    amount : 8500u64,
+    buildings : 1u64, 
+    _nonce: 0group,
+};
+token_remover: u64 = 1500u64;
 
-[triangle] 
-a : u32 = 10u32;
-b : u32 = 20u32;
 
-[test_loop]
+[mystery_card_5] //mystery card 5
+mc5 : Buildings = Buildings {
+    owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
+    amount : 8500u64,
+    buildings : 1u64, 
+    _nonce: 0group,
+};
+ROB_ME: u64 = 5000u64;
 
+
+//transfer minted token from public -> private
+[transfer_public_to_private]
+to_address: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+amount: u64 = 50u64;
+
+
+//main reward for user after one user won!
+[mint_reward]
+to_address: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+amount: u64 = 15000u64;
