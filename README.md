@@ -8,6 +8,8 @@
 
 A simple monopoly game in Leo.
 
+Please `replace` your address and private key in the code ~ both in the `.env` and `input` file 
+
 ## Summary
 
 This program is a game of two(owner and addr2) where each gets 10,000 NGN to buy buildings
