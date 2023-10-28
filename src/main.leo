@@ -1,275 +1,319 @@
 //==============================================================================================================================
 //==============================================================================================================================
-//===============================================    ALEO MONOPOLY REBUILD   ===================================================
-//======================================================  VER: 0.1.0. ==========================================================
+//===============================================    ALEO MONOPOLY REBUILD II  =================================================
+//======================================================  VER: 0.2.0. ==========================================================
 //==============================================================================================================================
-//This is the rebuild version of the Aleo-Monopoly-V0.2, now in this version, new attribute are added and new implementations
-//New Attrbutes:
-//- Building color (Black, White) implementation: owner picks white color, addr2 picks black color. white color is superior and
-//                                                has more rewards than the black color...
-//==============================================================================================================================
-//- Import function Implementation: we have the purchase(buy), rent and sale functions to enable owner and addr2 to build up 
-//                                  their interactions among themselves, both works simultaneously for now....
-//==============================================================================================================================
-//- amt: amt for every purchase, rent and sale are different in the Building color, as said white_color > black_color
-//==============================================================================================================================
-
-//We hope to input months into this program so that both the owner and addr2 will play around paying themselves for 12 months
-//and also I will setup some disasters based on random number so a given address is chance to lose against another address
-//Dont cheat my code haha, i will build up on PHP too to deploy this program there, have fun, ~ aleo team
+// This is the rebuild version of the Aleo-Monopoly-V0.2, now in this version, new attribute are added and new implementations
 //==============================================================================================================================
 //=============================================     Powered By Leo Programming    ==============================================
-import functions.leo;
 
+program aleo_monopoly1.aleo{
 
-program shib.aleo{
-
-    record Buildings{
-        owner : address,
-        addr2 : address,
-        gates: u64,
-        amt : u32, 
-        addr2_amt : u32,
-        white_color: bool,
-        black_color: bool,
+    // Game Record
+   record Buildings{
+        owner : address, //address
+        amount : u64, 
+        //white_color: bool, //if the building is white, the amt per cost will be 1500 token
+        buildings: u64,
     }
 
-    record Bank{
+    // Reward Record
+    record Reward {
+        supply: u64,
         owner: address,
-        receiver: address,
-        gates: u64,
-        bank_amt: u32,
-        receiver_amt: u32,
-        interest: u32,
+        amount: u64,
     }
 
-    
-    //Build a monopoly game of two players owner(a), addr2(b) address
-    transition main(owner: address, addr2: address, amt: u32, addr2_amt: u32, white_color: bool, black_color: bool) -> Buildings{
-        return Buildings{
-            owner: owner,
-            addr2: addr2,
-            gates: 0u64,
-            amt: amt,
-            addr2_amt: addr2_amt,
-            white_color: white_color,
-            black_color: black_color,
+    // On-chain storage of an `account` map, with `address` as the key,
+    // and `u64` as the value.
+    mapping account: address => u64;
+
+    //user claimable reward
+    mapping get_reward: address => u64;
+
+    //remaining supply of claimable reward
+    mapping remaining_supply: u64 => u64; 
+
+    //issue a monopoly token to a player ~ to_address 
+    transition issue(to_address: address, amount: u64) -> (address, u64){ 
+        // Compute the owner as `owner`.
+        assert_eq(self.caller, to_address);
+        //let hash: address = BHP256::hash_to_address(to_address); => encrypting your owned address with another unique aleo address
+        return (to_address, amount) then finalize (to_address, amount);
+    }
+        //================= MAPPING BALANCES TO ACCOUNT TO_ADDRESS =======================
+        finalize issue (public to_address: address, public amount: u64) {
+
+        // Increments `account[to_address]` by `amount`.
+        let to_address_amount: u64 = Mapping::get_or_use(account, to_address, 0u64);
+        Mapping::set(account, to_address, to_address_amount + amount);
+    }
+
+
+
+
+    //================================================================================================
+    //================================= PURCHASE (BUY) BUILDING ======================================
+    //================================================================================================
+    transition monopoly_buy (buy: Buildings, spend_amount: u64) -> (Buildings, u64) {
+        // Compute the owner as `owner`.
+        assert_eq(self.caller, buy.owner);
+
+        let buy_to : Buildings = Buildings{
+            owner: buy.owner,
+            amount:  buy.amount - spend_amount,
+            buildings: buy.buildings,
         };
+        return (buy_to, spend_amount)  then finalize (self.caller, spend_amount);
     }
-
-    //===========================================================================================
-    //====================== OWNER PURCHASE (BUY) WHITE COLOR BUILDING ==========================
-    //===========================================================================================
-    transition monopoly_owner_buy (owner: address, addr2: address, amt: u32, addr2_amt: u32, white_color: bool, black_color: bool) -> Buildings{
-        //set the owner amount based on the attribute rendered
-        //white building -> 1,500 token - owner buys 
-        //black building -> 1,000 token
-        let color_attr_amt: u32 = amt - functions.leo/owner_color(amt);
-
-        let white_color_set: bool = false;
-
-        //setting the boolean attr to owner, if bought, set at `true, otherwise default @ `false`
-        if (functions.leo/owner_color(amt) == 1500u32){
-            white_color_set  = true;
-        }else{
-            white_color_set  = white_color;
-        }
-
-        let buy : Buildings = Buildings{
-            owner: owner,
-            addr2: addr2,
-            gates: 0u64,
-            amt:  color_attr_amt,
-            addr2_amt: addr2_amt,
-            white_color: white_color_set,
-            black_color: black_color,
-        };
-        return buy;
+        //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
+        finalize monopoly_buy (public owner: address, public spend_amount: u64) {
+        // Decrements `account[to_address]` by `amount`.
+        let owner_amount: u64 = Mapping::get_or_use(account, owner, 0u64);
+        Mapping::set(account, owner, owner_amount - spend_amount);
     }
 
 
-    
-    //===========================================================================================
-    //====================== ADDR2 PURCHASE (BUY) BLACK COLOR BUILDING ==========================
-    //===========================================================================================
-       transition monopoly_addr2_buy (owner: address, addr2: address, amt: u32, addr2_amt: u32, white_color: bool, black_color: bool) -> Buildings{
-        let all_int: u32 = 123u32;
-        let all_int2: u32 = ((all_int * all_int) / 10u32) % 10000u32;
-
-        //set the buyer(addr2) amount based on the attribute rendered
-        //white building -> 1,500 token 
-        //black building -> 1,000 token - addr2 buys
-        let color_attr_amt: u32 = addr2_amt - functions.leo/addr2_color(amt);
-
-        let black_color_set: bool = false;
-
-        //setting the boolean attr to owner, if bought, set at `true, otherwise default @ `false`
-        if (functions.leo/addr2_color(amt) == 1000u32){
-            black_color_set  = true;
-        }else{
-            black_color_set  = black_color;
-        }
-
-        let buy : Buildings = Buildings{
-            owner: owner,
-            addr2: addr2,
-            gates: 0u64,
-            amt:  amt , //addr2 pays owner 100 NGN for rent
-            addr2_amt: color_attr_amt, //remaining balance of addr2
-            white_color: white_color,
-            black_color: black_color_set,
-
-        };
-        return buy;
-    
-    }
 
 
-    
+
     //====================================================================================================
-    //====================== OWNER RENT (GET_RENT -> +150) WHITE COLOR BUILDING ==========================
+    //============================= DEDUCT RENT (DEDUCT_RENT -> -150) BUILDING ==============================
     //====================================================================================================
-    //player a receive rent of 100 token per annum
-    transition monopoly_owner_rent (owner: address, addr2: address, amt: u32, addr2_amt: u32, white_color: bool, black_color: bool) -> Buildings{
-        //take rent from addr2 (-150u32)
-        let take_rent: u32 = addr2_amt - functions.leo/give_owner_rent(amt);
+    //address is deducted rent of 150 token per tx run
+    transition monopoly_rent (rent: Buildings, rent_amount: u64) -> (Buildings, u64){
+        // Compute the owner as `owner`.
+        assert_eq(self.caller, rent.owner);
 
-        //give rent to owner (+150u32)
-        let get_rent: u32 = amt + functions.leo/give_owner_rent(amt);
-        
-        //setting the bool to false by default
-        let bool_get_rent: bool = false;
-
-        if (functions.leo/give_owner_rent(amt)  == 150u32){
-            bool_get_rent = true;
+        if (rent_amount  == 150u64){
+           assert(true);
         }else{
-            bool_get_rent = white_color;
+           assert(false);
         }
 
-        let rent : Buildings = Buildings{
-            owner: owner,
-            addr2: addr2,
-            gates: 0u64,
-            amt: get_rent,
-            addr2_amt: take_rent,
-            white_color: bool_get_rent,
-            black_color: black_color,
+        let rent_to : Buildings = Buildings{
+            owner: rent.owner,
+            amount:  rent.amount - rent_amount,
+            buildings: rent.buildings,
         };
-        return rent;
+             return (rent_to, rent_amount) then finalize (self.caller, rent_amount);
     }
+        //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
+        finalize monopoly_rent (public owner: address, public rent_amount: u64) {
+        // Decrements `account[to_address]` by `rent amount`.
+        let owner_amount: u64 = Mapping::get_or_use(account, owner, 0u64);
+        Mapping::set(account, owner, owner_amount - rent_amount);
 
-
-       
-    //====================================================================================================
-    //====================== ADDR2 RENT (GET_RENT -> +100) BLACK COLOR BUILDING ==========================
-    //====================================================================================================
-    transition monopoly_addr2_rent (owner: address, addr2: address, amt: u32, addr2_amt: u32, white_color: bool, black_color: bool) -> Buildings{
-        //take rent from owner (-100u32)
-        let take_rent: u32 = amt - functions.leo/give_addr2_rent(amt);
-
-        //give rent to owner (+150u32)
-        let get_rent: u32 = addr2_amt + functions.leo/give_addr2_rent(amt);
-        
-        //setting the bool to false by default
-        let bool_get_rent: bool = false;
-
-        if (functions.leo/give_addr2_rent(amt)  == 100u32){
-            bool_get_rent = true;
-        }else{
-            bool_get_rent = black_color;
-        }
-
-        let rent : Buildings = Buildings{
-            owner: owner,
-            addr2: addr2,
-            gates: 0u64,
-            amt: take_rent,
-            addr2_amt: get_rent,
-            white_color: white_color,
-            black_color: bool_get_rent,
-        };
-        return rent;
     }
 
 
 
 
-transition monopoly_no_rent (owner: address, addr2: address, amt: u32, addr2_amt: u32, white_color: bool, black_color: bool) -> Buildings{
-        //take rent from owner (-100u32)
-        let owner_no_rent: u32 = amt - 150u32;
+    //====================================================================================================
+    //=============================== ADD RENT (GET_RENT -> +150) BUILDING ===============================
+    //====================================================================================================
+    //address receive rent of 150 token per tx run
+    transition monopoly_rent2 (rent: Buildings, rent_amount: u64) -> (Buildings, u64){
+        // Compute the owner as `owner`.
+        assert_eq(self.caller, rent.owner);
 
-        //give rent to owner (+150u32)
-        let addr2_no_rent: u32 = addr2_amt - 100u32;
-        
-        //setting the bool to false by default
-        let bool_no_rent: bool = true;
-
-        let rent : Buildings = Buildings{
-            owner: owner,
-            addr2: addr2,
-            gates: 0u64,
-            amt: owner_no_rent,
-            addr2_amt: addr2_no_rent,
-            white_color: bool_no_rent,
-            black_color: bool_no_rent,
-        };
-        return rent;
-    }
-
-
-
-
-
-    transition monopoly_sale (owner: address, addr2: address, amt: u32, addr2_amt: u32, white_color: bool, black_color: bool) -> Buildings{
-        //owner amt
-        let sale_ownership: u32 = functions.leo/sale_owner(amt);
-
-        //subtract bidding amount from `addr2`
-        let new_addr2_amt: u32 = addr2_amt - sale_ownership;
-        //add total amount to the owner 
-        let new_owner_amt: u32 = amt + sale_ownership;
-
-                //setting the bool to false by default
-        let bool_get_sale: bool = false;
-
-        if (functions.leo/sale_owner(amt)  == 15000u32){
-            bool_get_sale = true;
+        if (rent_amount  == 150u64){
+            assert(true);
         }else{
-            bool_get_sale = white_color;
+            assert(false);
         }
 
-        return Buildings{
-            owner: owner,
-            addr2: addr2,
-            gates: 0u64,
-            amt: new_owner_amt,
-            addr2_amt: new_addr2_amt,
-            white_color: bool_get_sale,
-            black_color: black_color,
+        let rent_to : Buildings = Buildings{
+            owner: rent.owner,
+            amount:  rent.amount + rent_amount,
+            buildings: rent.buildings,
         };
+             return (rent_to, rent_amount) then finalize (rent.owner, rent_amount);
+    }
+        //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
+        finalize monopoly_rent2 (public to_address: address, public rent_amount: u64) {
+        // increment `account[to_address]` by `rent amount`.
+        let to_address_amount: u64 = Mapping::get_or_use(account, to_address, 0u64);
+        Mapping::set(account, to_address, to_address_amount + rent_amount);
+
     }
 
 
 
     //==========================================================================================
-    //============= The receiver `addr2` has to borrow from the bank to ========================
-    //=============== to pay the owner the remaining bal due ===================================
-    
-    transition monopoly_bank_borrow (owner: address, receiver: address, bank_amt: u32, receiver_amt: u32, interest: u32) -> Bank {
-        let borrow_amt: u32 = 10000u32;
+    //============================ MONOPOLY SALE TOKEN =========================================
+    //==========================================================================================
+    transition monopoly_sale (sale: Buildings, to_address: address, sale_amount: u64) -> (Buildings, address, u64){
+        // Compute the owner as `owner`.
+        assert_eq(self.caller, sale.owner);
 
-        //receiver amt
-        let receiver_tot_amt: u32 = (receiver_amt + borrow_amt) - interest;
-
-        let bank_borrow: Bank = Bank {
-            owner: owner,
-            receiver: receiver,
-            gates: 0u64,
-            bank_amt: bank_amt - borrow_amt,
-            receiver_amt: receiver_tot_amt, //the bank takes its first interest that month
-            interest: interest,
-        };
+        let sale_amt: u64 = sale_amount;
         
-        return bank_borrow;
+        if (sale_amt >= 8000u64){
+            assert(true);
+        }else{
+            assert(false); 
+        }
+
+        //SALE THE BUILDING AND OFFER BUILDING TO THE (owner)
+        let new_buildings : u64 = 1u64;
+
+        let sale_to : Buildings = Buildings{
+            owner: sale.owner,
+            amount:  (sale.amount + sale_amt),
+            buildings: (sale.buildings - new_buildings),
+        };
+             return (sale_to, to_address, sale_amt) then finalize (self.caller, to_address, sale_amt);
     }
+        //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
+        finalize monopoly_sale (public owner: address, public to_address: address, public sale_amt: u64) {
+        // Increments `account[owner]` by `amount`.
+        let to_address_amount: u64 = Mapping::get_or_use(account, to_address, 0u64);
+        Mapping::set(account, to_address, to_address_amount - sale_amt);
+
+        // Decrements `account[to_address]` by `amount`.
+        let owner_amount: u64 = Mapping::get_or_use(account, owner, 0u64);
+        Mapping::set(account, owner, owner_amount + sale_amt);
+    }
+
+
+//=============================================================================================
+//========================== 1st MYSTERY CARD #1 ==============================================
+//============================== TOKEN ADDER ==================================================
+transition mystery_card_1 (mc1: Buildings,  token_adder: u64) -> (Buildings, u64){
+        // Compute the owner as `owner`.
+        assert_eq(self.caller, mc1.owner);
+
+        // new amount ~ owner
+        let new_amt: u64 = mc1.amount - token_adder;
+  
+        let mystery : Buildings = Buildings{
+            owner: mc1.owner,
+            amount:  new_amt,
+            buildings: mc1.buildings,
+        };
+             return (mystery, token_adder)  then finalize (self.caller, token_adder);
+    }
+        //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
+        finalize mystery_card_1 (public owner: address, public token_adder: u64) {
+        // Increments `account[owner]` by `amount`.
+        let owner_amount: u64 = Mapping::get_or_use(account, owner, 0u64);
+        Mapping::set(account, owner, owner_amount + token_adder);
+        
+    }
+
+
+//=============================================================================================
+//========================== 2nd MYSTERY CARD #2 =============================================
+//============================= TOKEN REMOVER ================================================
+transition mystery_card_2 (mc2: Buildings,  token_remover: u64) -> (Buildings, u64){
+        // Compute the owner as `owner`.
+        assert_eq(self.caller, mc2.owner);
+        
+        //token remover :( ooopss
+        let new_amt : u64 = mc2.amount + token_remover;
+
+        let mystery : Buildings = Buildings{
+            owner: mc2.owner,
+            amount:  new_amt,
+            buildings: mc2.buildings,
+        };
+             return (mystery, token_remover)  then finalize (self.caller, token_remover);
+    }
+        //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
+        finalize mystery_card_2 (public owner: address, public token_remover: u64) {
+        // Decrements `account[owner]` by `amount`.
+        let owner_amount: u64 = Mapping::get_or_use(account, owner, 0u64);
+        Mapping::set(account, owner, owner_amount - token_remover);
+    }
+
+
+//=============================================================================================
+//========================== 5TH MYSTERY CARD #5 =============================================
+//============================= ROB ME(STEALER TOKEN)============= DANGEROUS ==================
+transition mystery_card_5 (mc5: Buildings,  ROB_ME: u64) -> (Buildings, u64){
+        //token remover :( ooopss
+        //=================================================================
+        //======= MAPPING REQUIRED HERE to retrieve BALANCE[ADDRESS] ======
+        //==================== account[BALANCE] ===========================
+        //=================================================================
+        // ROB_ME = ROB_ME;
+
+        let owner_amt: u64 = mc5.amount + ROB_ME;
+        // Compute the owner as `owner`.
+        assert_eq(self.caller, mc5.owner);
+
+        let mystery : Buildings = Buildings{
+            owner: mc5.owner,
+            amount:  owner_amt,
+            buildings: mc5.buildings,
+        };
+             return (mystery, ROB_ME)  then finalize (self.caller, ROB_ME);
+    }
+        //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
+        finalize mystery_card_5 (public owner: address, public ROB_ME: u64) {
+        // Decrements `account[owner]` by `amount`.
+        let owner_amount: u64 = Mapping::get_or_use(account, owner, 0u64);
+        Mapping::set(account, owner, owner_amount - ROB_ME);
+    }
+
+//=============================================================================================
+//=========================== MINTED TOKEN TRANSFER_PUBLIC_2_PRIVATE ==========================
+//=============================================================================================
+// The function `transfer_public_to_private` turns a specified token amount from `account` into a token record for the specified receiver.
+    // This function preserves privacy for the receiver's record, however it publicly reveals the caller and the specified token amount.
+    transition transfer_public_to_private(public to_address: address, public amount: u64) -> Buildings {
+        // Produces a token record for the token receiver.
+        let transferred: Buildings = Buildings {
+            owner: to_address,
+            amount: amount,
+            buildings: 1u64,
+        };
+
+        // Output the receiver's record.
+        // Decrement the token amount of the caller publicly.
+        return transferred then finalize(self.caller, amount);
+    }
+
+    finalize transfer_public_to_private(public sender: address, public amount: u64) {
+        // Decrements `account[sender]` by `amount`.
+        // If `account[sender]` does not exist, it will be created.
+        // If `account[sender] - amount` underflows, `transfer_public_to_private` is reverted.
+        let current_amount: u64 = Mapping::get_or_use(account, sender, 0u64);
+        Mapping::set(account, sender, current_amount - amount);
+    }
+
+
+
+//==============================================================================================
+//=================================== REWARD FOR TO_ADDRESS ====================================
+//==============================================================================================
+transition mint_reward(to_address: address, amount: u64) -> Reward {
+       //set number of supplys
+       let supply_reward: u64 = 1500000000u64;
+       // Compute the hash of the token owner.
+       let hash: address = BHP256::hash_to_address(to_address);
+
+        // Produce a token record for the specified receiver.
+        let receive_reward: Reward = Reward {
+            supply: (supply_reward - amount),
+            owner: to_address,
+            amount: amount,
+        };
+
+        // Output the sender's change record and the receiver's record.
+        return receive_reward then finalize(self.caller, amount, supply_reward);
+    }
+
+        finalize mint_reward(public to_address: address, public supply: u64, public amount: u64) {
+        // Decrements `account[sender]` by `amount`.
+        // If `get_reward[to_address]` does not exist, it will be created.
+        // If `get_reward[to_address] + amount` underflows, `transfer_public_to_private` is reverted.
+        let tot_remaining_supply: u64 = Mapping::get_or_use(remaining_supply, supply, 0u64);
+        Mapping::set(remaining_supply, supply, tot_remaining_supply - amount);
+
+        let reward_amount: u64 = Mapping::get_or_use(get_reward, to_address, 0u64);
+        Mapping::set(get_reward, to_address, reward_amount + amount);
+    }
+
 }
