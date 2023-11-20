@@ -14,23 +14,16 @@ _nonce: 0group,
 spend_amount: u64 = 1500u64;
 
 
-[monopoly_rent] //the owner collect rent from caller => deduct function in the aleo_monopoly.js
-rent : Buildings = Buildings {
-owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
-amount : 8500u64,
-buildings : 1u64, 
-_nonce: 0group,
-};
-rent_amount: u64 = 150u64;
 
 
-[monopoly_rent2] //the caller collect rent from owner => add function in the aleo_monopoly.js
+[monopoly_rent] //the caller collect rent from owner => add function in the aleo_monopoly.js
 rent : Buildings = Buildings {
     owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
     amount : 8500u64,
     buildings : 1u64, 
     _nonce: 0group,
 };
+random_roll: u64 = 0u64;
 rent_amount: u64 = 150u64;
 
 
@@ -45,44 +38,18 @@ to_address: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rse
 sale_amount: u64 = 10000u64;
 
 
-
-[mystery_card_1] //mystery card 1
+[mystery_card] // all-in-one mystery card input #1
 mc1 : Buildings = Buildings {
     owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
     amount : 8500u64,
     buildings : 1u64, 
 _   nonce: 0group,
 };
-token_adder: u64 = 1500u64;
+random_choose: u64 = 0u64;
+token_action: u64 = 1500u64;
 
 
-[mystery_card_2] //mystery card 2
-mc2 : Buildings = Buildings {
-    owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
-    amount : 8500u64,
-    buildings : 1u64, 
-    _nonce: 0group,
-};
-token_remover: u64 = 1500u64;
-
-
-[mystery_card_5] //mystery card 5
-mc5 : Buildings = Buildings {
-    owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
-    amount : 8500u64,
-    buildings : 1u64, 
-    _nonce: 0group,
-};
-ROB_ME: u64 = 5000u64;
-
-
-//transfer minted token from public -> private
-[transfer_public_to_private]
-to_address: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
-amount: u64 = 50u64;
-
-
-//main reward for user after one user won!
+//main reward for user after one user won! mint once
 [mint_reward]
 to_address: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
-amount: u64 = 15000u64;
+amount: u128 = 15000u128;
