@@ -23,7 +23,7 @@ This program is a game of owner where each gets 10,000 token to buy buildings of
 Note that the program can be easily extended to include addition features such as a `fractional investing` function, which would allow owner to invest partly to other users or owner.
 
 
-#Token and Building Structures
+### Token and Building Structures
 `aMONO Token Structure (TokenInfo):`
 - Represents a custom token named aMONO.
 - Contains information such as token name, symbol, decimals, circulating supply, total supply, and admin address.
@@ -32,17 +32,17 @@ Note that the program can be easily extended to include addition features such a
 - Describes a building in the Monopoly game.
 - Includes a unique building ID, maximum building count, and the receiver's address.
 
-#Game Records and Mappings
+### Game Records and Mappings
 `Game Record (Buildings):`
 - Records the owner's address, the amount of tokens, and the number of buildings owned.
 
-#Mappings:
+### Mappings:
 - `account:` Maps addresses to their respective token balances.
 - `get_reward:` Maps addresses to claimable reward amounts.
 - `tokens:` Maps token IDs to their corresponding TokenInfo.
 - `unique_building:` Maps unique building IDs to their BuildingInfo.
   
-#Token Issuance and Management
+### Token Issuance and Management
 `Token Issuance (issue transition):`
 - Allows the issuance of aMONO tokens to a specified player.
 - Checks the caller's address before processing the issuance.
