@@ -1,55 +1,69 @@
 // The program input for /src/main.leo
+[init]
+public b: bool = true;
+
+[change_admin]
+public admin: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+
 [issue] // the caller call in issue of token
-to_address: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
-to_amount: u64 = 10000u64;
+owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+amount: u64 = 10000u64;
 
 
 [monopoly_buy] //the caller purchasing its building
-buy : Buildings = Buildings {
-owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
-amount : 10000u64,
-buildings : 1u64, 
-_nonce: 0group,
-};
-spend_amount: u64 = 1500u64;
-
-
+owner : address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+amount : u64 = 10000u64;
+buildings : u64 = 1u64; 
 
 
 [monopoly_rent] //the caller collect rent from owner => add function in the aleo_monopoly.js
-rent : Buildings = Buildings {
-    owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
-    amount : 8500u64,
-    buildings : 1u64, 
-    _nonce: 0group,
-};
+owner : address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+amount : u64 = 8500u64;
+buildings : u64 = 1u64;
 random_roll: u64 = 0u64;
-rent_amount: u64 = 150u64;
 
 
-[monopoly_sale] //the caller sale the building to owner for x token
-sale : Buildings = Buildings {
-    owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
-    amount : 8500u64,
-    buildings : 1u64,
-    _nonce : 0group,
-};
+[monopoly_sale] //the caller sale the building to another owner for x token >= 8000 token
+owner : address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+amount : u64 = 8500u64;
+buildings : u64 = 1u64;
+sale_amount: u64 = 8000u64;
 to_address: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
-sale_amount: u64 = 10000u64;
 
 
 [mystery_card] // all-in-one mystery card input #1
-mc1 : Buildings = Buildings {
-    owner : aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
-    amount : 8500u64,
-    buildings : 1u64, 
-_   nonce: 0group,
-};
-random_choose: u64 = 0u64;
-token_action: u64 = 1500u64;
+owner : address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+amount : u64 = 8500u64;
+buildings : u64 = 1u64;
+random_choose: u64 = 3u64;
 
 
-//main reward for user after one user won! mint once
+[staking_utility] // stake to earn mode
+owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+amount: u64 = 8500u64;
+buildings: u64 = 1u64;
+//utility_choose: u64 = 0u64;
+
+
+[unstaking_utility] // unstake to get earned token mode
+owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+amount: u64 = 8500u64;
+buildings: u64 = 1u64;
+//utility_choose: u64 = 0u64;
+
+
+[bidding_info]
+owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+amount: u64 = 8500u64;
+buildings: u64 = 0u64;
+
+
+[claim_bidding_reward]
+owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+amount: u64 = 8500u64;
+buildings: u64 = 0u64;
+
+//main reward for user after one user won!
 [mint_reward]
-to_address: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
-amount: u128 = 15000u128;
+owner: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+amount: u64 = 15000u64;
