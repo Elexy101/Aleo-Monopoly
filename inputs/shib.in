@@ -1,9 +1,9 @@
 // The program input for /src/main.leo
 [init]
-public b: bool = true;
+b: bool = true;
 
 [change_admin]
-public admin: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+admin: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
 
 [issue] // the caller call in issue of token
 owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
@@ -20,7 +20,7 @@ buildings : u64 = 1u64;
 owner : address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
 amount : u64 = 8500u64;
 buildings : u64 = 1u64;
-random_roll: u64 = 0u64;
+
 
 
 [monopoly_sale] //the caller sale the building to another owner for x token >= 8000 token
@@ -35,24 +35,27 @@ to_address: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rse
 owner : address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
 amount : u64 = 8500u64;
 buildings : u64 = 1u64;
-random_choose: u64 = 3u64;
 
 
 [staking_utility] // stake to earn mode
 owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
 amount: u64 = 8500u64;
 buildings: u64 = 1u64;
-//utility_choose: u64 = 0u64;
 
 
 [unstaking_utility] // unstake to get earned token mode
 owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
 amount: u64 = 8500u64;
 buildings: u64 = 1u64;
-//utility_choose: u64 = 0u64;
 
 
 [bidding_info]
+owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+amount: u64 = 8500u64;
+buildings: u64 = 0u64;
+
+
+[unbidding_info]
 owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
 amount: u64 = 8500u64;
 buildings: u64 = 0u64;
@@ -67,3 +70,34 @@ buildings: u64 = 0u64;
 [mint_reward]
 owner: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
 amount: u64 = 15000u64;
+
+
+[init_tournament]
+tournament_id: field = 123field;
+target_amt: u64 = 20000u64;
+criteria_amt: u64 = 15000u64;
+winners: u64 = 3u64; // set winners to win to collect reward
+active: bool = true;
+
+
+[end_tournament]
+tournament_id : field = 123field;
+b: bool = true;
+
+[tournament_game]
+owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+
+[send_token]
+owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+to_address: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+amount: u64 = 100u64;
+
+[play_request]
+play_id: field = 123field;
+owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+opponent: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+game_begins: bool = false;
+
+
+[hashed_address]
+owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
