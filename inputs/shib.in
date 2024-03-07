@@ -21,14 +21,16 @@ owner : address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7
 amount : u64 = 8500u64;
 buildings : u64 = 1u64;
 
-
-
 [monopoly_sale] //the caller sale the building to another owner for x token >= 8000 token
 owner : address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
-amount : u64 = 8500u64;
-buildings : u64 = 1u64;
+building_id : u64 = 123u64;
 sale_amount: u64 = 8000u64;
-to_address: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+
+[accept_monopoly_sale] // the buyer must accept caller agreed price from monopoly_sale to approve buy-off of building
+owner: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+building_id: field = 123field;
+buy_amount: u64 = 0u64;
+
 
 
 [mystery_card] // all-in-one mystery card input #1
@@ -93,10 +95,22 @@ to_address: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rse
 amount: u64 = 100u64;
 
 [play_request]
-play_id: field = 123field;
 owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
 opponent: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
-game_begins: bool = false;
+
+[accept_request]
+owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+opponent: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+game_hash: field = 123field;
+
+[check_request]
+owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+opponent: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
+game_hash: field = 123field;
+
+[combine_owner_opponent_hash]
+owner: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m;
+opponent: address = aleo1vtuct9867t6aldkqxuec87wesrpltk0vv4qul56wpugnn5gx05rsew3z4u;
 
 
 [hashed_address]
