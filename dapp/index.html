@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEO-MONOPOLY - Play 1st Monopoly game on ALEO</title>
+
+  <!-- 
+    - favicon
+  -->
+  <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml">
+
+  <!-- 
+    - custom css link
+  -->
+  <link rel="stylesheet" href="./assets/css/style.css">
+
+
+  <!-- 
+    - google font link
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <!-- 
+    - ionicon link
+  -->
+  <script type="module" src="https://unpkg.com/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule="" src="https://unpkg.com/ionicons@latest/dist/ionicons/ionicons.js"></script>
+</head> 
+
+<body>
+
+  <!-- 
+    - #HEADER
+  -->
+
+  <header class="header" data-header>
+
+    <div class="overlay" data-overlay></div>
+
+    <div class="header-top">
+      <div class="container">
+
+        <ul class="header-top-list">
+
+          <li>
+            <a href="mailto:emmanuellinus013@gmail.com" class="header-top-link">
+              <ion-icon name="mail-outline"></ion-icon>
+
+              <!-- <span hidden="true">aleo_monopoly@gmail.com</span> -->
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="header-top-link">
+              <ion-icon name="location-outline"></ion-icon>
+
+              <address>!! ALEO-MONOPOLY !!</address>
+            </a>
+          </li>
+
+        </ul>
+
+        <div class="wrapper">
+          <ul class="header-top-social-list">
+
+            <li>
+              <a href="#" class="header-top-social-link">
+                <ion-icon name="logo-twitter"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="header-top-social-link">
+                <ion-icon name="logo-instagram"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="header-top-social-link">
+                <ion-icon name="logo-discord"></ion-icon>
+              </a>
+            </li>
+
+          </ul>
+
+          <button class="header-top-btn" id="aleo_wallet" onclick="openModal(document.getElementById('modal_wallet'));">Connect wallet</button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="header-bottom">
+      <div class="container">
+
+        <a href="#" class="logo">
+          <img src="./assets/images/service-2.png" height="100" style="border-radius: 2em;" alt="Homeverse logo">
+        </a>
+
+        <nav class="navbar" data-navbar>
+
+          <div class="navbar-top">
+
+            <a href="#" class="logo">
+              <img src="./aleo1.jpg" style="border-radius: 10em; height: 50%; width: 50%;" alt="Homeverse logo">
+            </a>
+
+            <button class="nav-close-btn" data-nav-close-btn aria-label="Close Menu">
+              <ion-icon name="close-outline"></ion-icon>
+            </button>
+
+          </div>
+
+          <div class="navbar-bottom">
+            <ul class="navbar-list">
+
+              <li>
+                <a href="#home" class="navbar-link" data-nav-link>Home</a>
+              </li>
+
+              <li>
+                <a href="#about" class="navbar-link" data-nav-link>About</a>
+              </li>
+
+              <li>
+                <a href="#service" class="navbar-link" data-nav-link>Play Game</a>
+              </li>
+
+              <li>
+                <a href="#property" class="navbar-link" data-nav-link>Property</a>
+              </li>
+
+              <li>
+                <a href="#blog" class="navbar-link" data-nav-link>Blog</a>
+              </li>
+
+              <li>
+                <a href="#contact" class="navbar-link" data-nav-link>Contact</a>
+              </li>
+
+            </ul>
+          </div>
+
+        </nav>
+
+        <div class="header-bottom-actions">
+
+          <button onclick="openModal(document.getElementById('modal_5'));"  class="header-bottom-actions-btn" aria-label="Search">
+            <ion-icon name="search-outline"></ion-icon>
+
+            <span>Notify</span>
+          </button>
+
+          <button onclick="openModal(document.getElementById('modal_3'));" class="header-bottom-actions-btn" aria-label="Profile">
+            <ion-icon name="ribbon-outline"></ion-icon>
+
+            <span>Claim</span>
+          </button>
+
+          <button onclick="openModal(document.getElementById('modal_profile'));" class="header-bottom-actions-btn" aria-label="Cart">
+            <ion-icon name="person-outline"></ion-icon>
+
+            <span>Reveal me</span>
+          </button>
+
+          <button id="aleo_wallet" onclick="openModal(document.getElementById('modal_wallet'));" class="header-bottom-actions-btn" aria-label="Cart">
+            <ion-icon name="wallet-outline"></ion-icon>
+
+            <span>Connect</span>
+          </button>
+
+          <button class="header-bottom-actions-btn" data-nav-open-btn aria-label="Open Menu">
+            <ion-icon name="menu-outline"></ion-icon>
+
+            <span>Menu</span>
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+
+  </header>
+
+
+
+
+
+  <main>
+    <article>
+
+      <!-- 
+        - #HERO
+      -->
+
+      <!--
+      <section class="hero" id="home">
+        <div class="container">
+
+          <div class="hero-content">
+
+            <p class="hero-subtitle">
+              <ion-icon name="home"></ion-icon>
+
+              <span>Aleo Monopoly Testnet Live</span>
+            </p>
+
+            <h2 class="h1 hero-title">Roll up the dice man!</h2>
+
+            <p class="hero-text">
+              Discover, PLay the First Monopoly game on ALEO<hr>
+              <strong>Limited to x participant to claim testnet token. Challenge everyone to win this!</strong><hr><br>
+            </p>
+
+            <button class="btn" id="mint_token" onclick="mint_token()" disabled>Mint 10K MONO</button>
+          </div>
+
+          <figure class="hero-banner">
+            <img src="./assets/images/animated6.gif" alt="Modern house model" style="border-radius: 2em;" class="w-100">
+          </figure>
+
+        </div>
+      </section> -->
+
+
+      <section class="about" id="about">
+        <div class="container">
+
+          <figure class="about-banner" >
+
+            <img src="./assets/images/animated6.gif" style="border-radius: 2em;" alt="House interior">
+          </figure>
+
+          <div class="about-content">
+
+            <p class="section-subtitle">Testnet3 Live</p>
+
+            <h2 class="h2 section-title"><strong>Roll up the dice man!</strong></h2>
+
+            <p class="about-text">
+              Discover, PLay the First Monopoly game on ALEO that enhances privacy among players. <strong>Click icon for more info</strong>
+            </p>
+
+            <ul class="about-list">
+
+              <li class="about-item">
+                <div class="about-item-icon" onclick="openModal(document.getElementById('modal_rent'));">
+                  <ion-icon name="home-outline"></ion-icon>
+                </div>
+
+                <p class="about-item-text">Gain/Lose Rent[rolling dice]</p>
+              </li>
+
+              <li class="about-item">
+                <div class="about-item-icon" onclick="openModal(document.getElementById('modal_stake'));">
+                  <ion-icon name="shield-checkmark-outline"></ion-icon>
+                </div>
+
+                <p class="about-item-text">Stake to earn</p>
+              </li>
+
+              <li class="about-item">
+                <div class="about-item-icon" onclick="openModal(document.getElementById('modal_bid'));">
+                  <ion-icon name="cash-outline"></ion-icon>
+                </div>
+
+                <p class="about-item-text">Bid to win</p>
+              </li>
+
+              <li class="about-item">
+                <div class="about-item-icon" onclick="openModal(document.getElementById('modal_tournament'));">
+                  <ion-icon name="game-controller-outline"></ion-icon>
+                </div>
+
+                <p class="about-item-text">Tournament Games</p>
+              </li>
+
+            </ul>
+
+            <p class="callout">
+              "Limited to x participant to claim testnet token. Challenge everyone to win this!"
+            </p>
+
+            <button class="btn" id="mint_token" onclick="mint_token()" disabled>Mint 10K MONO</button>
+
+          </div>
+
+        </div>
+      </section>
+    
+
+<!-- FAQ/HELP ALEO-MONOPOLY -->
+    <div id="modal_2" class="modal" aria-hidden="true" aria-modal="true" tabindex="-1">
+      <div class="modal_box">
+        <center><h2> <img src="./aleo1.jpg" height="50" style="border-radius: 2em;" alt="Monopoly logo"> Help Aleo-Monopoly??</h2></center>
+        <strong>Do you have credits?</strong>, go to <a href="">Faucet</a> and type `/sendcredits <aleo_address> 15` in the faucet channel<br>
+        <hr><p><b>Step 1: </b>Connect wallet and sign message</p>
+        <hr><p><b>Step 2: </b>Click `Mint 10k token` to get some token for the game playing</p>
+        <hr><p><b>Step 3: </b>Purchase a Building!, transaction process may take long time within 5minutes</p>
+        <hr><p><b>Step 4: </b>Gain Rent, Lose Rent! by clicking `Get Rent` </p>
+        <hr><p><b>Step 5: </b>Mystery card is a unique function in the game that runs every 1mins, click it to see good/bad surprises! </p>
+        <hr><p><b>Step 6: </b>Sale of Building is now Live as user can sell at 10,000 token excluding rent rewards. To sale, unstake utilities is a must</p>
+        <hr><p><b>Step 7: </b>Super Auction Building are 3 rarest Building where user can earn 2x rent reward whether dice is rolled not, you still earn probably by claiming reward...</p>
+        <hr><p><b>Step 8: </b>Staking your token enables you earn as this shield you 75% against rent loss... </p>
+        <hr><p><b>Step 9: </b>Dont feel scared to fail, its a game, but try to win luck of achieving 12000 token in total to claim reward! </p>
+        <br>
+        <strong><center><a href="#"><button>=== version 0.1.0 ===</button></a></center></strong>
+      </div>
+    </div>
+
+
+<!-- ABOUT RENT ROLL -->
+<div id="modal_rent" class="modal" aria-hidden="true" aria-modal="true" tabindex="-1">
+  <div class="modal_box">
+    <center><h2> <img src="./aleo1.jpg" height="50" style="border-radius: 2em;" alt="Monopoly logo"> Private Rent Roll</h2></center>
+    <ul>
+      <li>&bull; In a conventional Monopoly game, income balance is often public knowledge. Aleo Monopoly ensures privacy by utilizing zero-knowledge proofs.</li>
+      <li>&bull; Rent rolls are generated privately based on a random number (x). This randomization determines whether a player gains or loses rent income.</li>
+      <li>&bull; Player income balance records are also private, accessible only when a player shares their view key with another party.</li>
+    </ul>
+    <br>
+    <strong><center><a href="#"><button>=== version 0.1.0 ===</button></a></center></strong>
+  </div>
+</div>
+<!-- ABOUT STAKE TO EARN -->
+<div id="modal_stake" class="modal" aria-hidden="true" aria-modal="true" tabindex="-1">
+  <div class="modal_box">
+    <center><h2> <img src="./aleo1.jpg" height="50" style="border-radius: 2em;" alt="Monopoly logo"> Stake to Earn</h2></center>
+    <ul>
+      <li>&bull; In Aleo-Monopoly, players can stake a specific amount of tokens by buying the utility security asset to mitigate potential losses in their rent rolls.</li>
+      <li>&bull; Staking provides a safety net, ensuring players still earn a percentage of income (75%) even if their dice roll results in a loss.</li>
+    </ul>    <br>
+    <strong><center><a href="#"><button>=== version 0.1.0 ===</button></a></center></strong>
+  </div>
+</div>
+<!-- ABOUT BID TO WIN -->
+<div id="modal_bid" class="modal" aria-hidden="true" aria-modal="true" tabindex="-1">
+  <div class="modal_box">
+    <center><h2> <img src="./aleo1.jpg" height="50" style="border-radius: 2em;" alt="Monopoly logo"> Bid to Win</h2></center>
+    <ul>
+      <li>&bull; Players have the option to bid on super buildings using Aleo.</li>
+      <li>&bull; Bidding is done privately, and player identities remain concealed as Aleo player addresses are hashed. This ensures a high level of secrecy during the bidding process.</li>
+      <li>&bull; The First-come-First-Served Principle is implemented, allowing the first bidder to win unless outbid by another player.</li>
+    </ul>    <br>
+    <strong><center><a href="#"><button>=== version 0.1.0 ===</button></a></center></strong>
+  </div>
+</div>
+<!-- ABOUT TOURNAMENT GAME[PLAY TO EARN] -->
+<div id="modal_tournament" class="modal" aria-hidden="true" aria-modal="true" tabindex="-1">
+  <div class="modal_box">
+    <center><h2> <img src="./aleo1.jpg" height="50" style="border-radius: 2em;" alt="Monopoly logo"> Tournament Games</h2></center>
+    <ul>
+      <li>&bull; Aleo Monopoly introduces two types of tokens: test tokens and reward tokens. Both tokens hold no intrinsic value.</li>
+      <li>&bull; These tokens play a crucial role in tournament games, where specific criteria, such as a required number of test tokens and a target goal, must be met for entry.</li>
+      <li>&bull; Tournaments have a maximum number of players and a limited number of winners. Once the winners are determined, no additional winners can claim rewards.</li>
+      <li>&bull; Multiple tournaments can be organized based on Tournament IDs, each with its unique criteria. Importantly, player balances remain private within the context of the ongoing tournament.</li>
+    </ul>    <br>
+    <strong><center><a href="#"><button>=== version 0.1.0 ===</button></a></center></strong>
+  </div>
+</div>
+
+
+
+<!-- MY PROFILE ALEO-MONOPOLY -->
+<div id="modal_profile" class="modal" aria-hidden="true" aria-modal="true" tabindex="-1">
+  <div class="modal_box">
+    <center><h2> <img src="./aleo1.jpg" height="50" style="border-radius: 2em;" alt="Monopoly logo"> My Profile</h2></center>
+    <p><b>Aleo Address: <b id="aleo_wallet2"></b</b></p>
+    <br />
+    <p><b>Balance: <b id="result2"></b></b></p>
+    <br>
+    <strong><center><a href="#"><button>=== version 0.1.0 ===</button></a></center></strong>
+  </div>
+</div>
+
+
+<!-- ABOUT ALEO-MONOPOLY -->
+<div id="modal_1" class="modal" aria-hidden="true" aria-modal="true" tabindex="-1">
+  <div class="modal_box">
+    <center><h2> <img src="./aleo1.jpg" height="50" style="border-radius: 2em;" alt="Monopoly logo"> Aleo-Monopoly Rebuild</h2></center><br/>
+    <p><b>Aleo-Monopoly</b> is a simple game on the Aleo Blockchain that uses leo programming to enhance privacy among players playing by rolling dice, owning building privately, stake token as utility to earn more/ shield against loss, bid super auction building!</p>
+    <br>
+    <strong><center><a href="#"><button>=== version 0.1.0 ===</button></a></center></strong>
+  </div>
+</div>
+
+
+
+<!-- CLAIM REWARD ALEO-MONOPOLY -->
+<div id="modal_3" class="modal" aria-hidden="true" aria-modal="true" tabindex="-1">
+  <div class="modal_box">
+    <center><h2> <img src="./aleo1.jpg" height="50" style="border-radius: 2em;" alt="Homeverse logo"> Aleo-Monopoly Reward</h2></center>
+    <p><b>Aleo-Monopoly</b> is a simple game on the Aleo Blockchain!. If you have accumulate user token up to 12,000 token and above, You'll be able to claim reward. <br><strong>================================== <br> N/B: Reward gotten will be not be exchanged for real money value but serves as identity in accomplishing task #1 in Aleo-Monopoly Testnet Phase I<br>==================================</strong></p>
+    <br>
+    <center><button class="btn" onclick="claim_reward()">Claim Reward</button></center>
+    <br>
+    <strong><center><a href="#"><button>=== version 0.1.0 ===</button></a></center></strong>
+  </div>
+</div>
+
+
+<!-- CHALLENGE OPPONENT -->
+<div id="modal_4" class="modal" aria-hidden="true" aria-modal="true" tabindex="-1">
+  <div class="modal_box">
+    <center><h2> <img src="./aleo1.jpg" height="50" style="border-radius: 2em;" alt="Monopoly logo"> <small>CHALLENGE OPPONENT</small></h2></center>
+    <center><p><input type="text" id="aleo_opponent_start" class="form-control" placeholder="Aleo opponent address" /></p><br>
+    <button  onclick="versus_game_start()" class="section-subtitle" value="Challenge" />Challenge</button></center>
+    <br>
+    <strong><center><a href="#"><button>=== version 0.1.0 ===</button></a></center></strong>
+  </div>
+</div>
+
+
+<div id="modal_5" class="modal" aria-hidden="true" aria-modal="true" tabindex="-1">
+  <div class="modal_box">
+    <center>
+      <h2>
+        <img src="./aleo1.jpg" height="50" style="border-radius: 2em;" alt="Monopoly logo">
+        <small>ACCEPT/CLAIM CHALLENGE</small>
+      </h2>
+    </center>
+    <center>
+      <div class="form-group">
+        <img src="./assets/images/service-3.png" height="100" style="border-radius: 2em;" alt="Monopoly logo"> 
+      </div>
+      <br>
+      <input type="button" name="accept_versus_btn" onclick="play_opponent();" class="btn btn-primary" value="Accept" />
+      <input type="button" name="check_versus_btn" onclick="claim_check();" class="btn btn-secondary" value="Claim" />
+    </center>
+    <br>
+    <strong>
+      <center><a href="#"><button>=== version 0.1.0 ===</button></a></center>
+    </strong>
+  </div>
+</div>
+
+
+
+<!-- SELECT A WALLET -->
+<div id="modal_wallet" class="modal" aria-hidden="true" aria-modal="true" tabindex="-1">
+  <div class="modal_box">
+    <center><h2> <img src="./aleo1.jpg" height="50" style="border-radius: 2em;" alt="Monopoly logo"> <small>PICK A WALLET</small></h2></center><br />
+    <center>
+      <div style="display: flex; justify-content: space-between;">
+        <img src="./assets/images/demox_wallet.png" style="width: 30%;" onclick="aleo_connect1()" />
+        <img src="./assets/images/puzzle_wallet.png" style="width: 30%;" onclick="aleo_connect2();" />
+      </div>
+    </center>
+    <br>
+    <strong><center><a href="#"><button>=== version 0.1.0 ===</button></a></center></strong>
+  </div>
+</div>
+
+
+      <!-- 
+        - #SERVICE
+      -->
+
+      <section class="service" id="service" style="background-image: url('./assets/images/dice_roll.webp');">
+        <div class="container" >
+
+          <p class="section-subtitle">Your Home</p>
+
+          <h2 class="h2 section-title">Play Game[$<small id="result"></small>]</h2>
+
+          <ul class="service-list">
+
+            <li>
+              <div class="service-card">
+                <div class="card-badge green">Active !!</div>
+                <div class="card-icon">
+                  <img src="./assets/images/service-1.png" alt="Service icon">
+                </div>
+
+                <h3 class="h3 card-title">
+                  <a href="#">Buy a home</a>
+                </h3>
+
+                <p class="card-text">
+                Buy a Building at 5000 token. can only be purchase multiple times!
+                </p>
+
+                <a onclick="purchase();" class="card-link">
+                  <span>Purchase</span>
+
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </a>
+
+              </div>
+            </li>
+
+            <li>
+              <div class="service-card">
+                <div class="card-badge green">Active !!</div>
+                <div class="card-icon">
+                  <img src="./assets/images/service-2.png" alt="Service icon">
+                </div>
+
+                <h3 class="h3 card-title">
+                  <a href="#">Rent a home</a>
+                </h3>
+
+                <p class="card-text">
+                Gaining/Losing Rent at 150 token, try your luck!
+                </p>
+
+                <a onclick="rentOperation()" class="card-link">
+                  <span>Rent</span>
+
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </a>
+
+              </div>
+            </li>
+
+            <!--
+            <li>
+              <div class="service-card">
+                <div class="card-badge green">Active !!</div>
+                <div class="card-icon">
+                  <img src="./assets/images/service-2.png" alt="Service icon">
+                </div>
+
+                <h3 class="h3 card-title">
+                  <a href="#">Mystery card</a>
+                </h3>
+
+                <p class="card-text">
+                Can I get some favour or suffer losses :(. click me to find out !
+                </p>
+
+                <a id="mysteryCardLink" class="card-link" disabled>
+                  <span>Random Pick</span>
+
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </a>
+
+              </div>
+            </li> -->
+
+
+            <li>
+              <div class="service-card">
+                <div class="card-badge green">Active !!</div>
+                <div class="card-icon">
+                  <img src="./assets/images/service-3.png" alt="Service icon">
+                </div>
+
+                <h3 class="h3 card-title">
+                  <a href="#">Sell a home</a>
+                </h3>
+
+                <p class="card-text">
+                  I need your token, you need my Building, lets deal privately
+                </p>
+                <!-- <input type="text" class="form-control" placeholder="Sell price" /> -->
+                <a href="#" onclick="sale_mono()" class="card-link">
+                  <span>Sell</span>
+
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </a>
+
+              </div>
+            </li>
+
+
+            <li>
+              <div class="service-card">
+                <div class="card-badge green">Active !!</div>
+                <div class="card-icon">
+                  <img src="./assets/images/monopoly-challenge.png" style="width: 15em; height: 9em; border-radius: 2em;" alt="Service icon">
+                </div>
+
+                <h3 class="h3 card-title">
+                  <a href="#">Versus Opponent</a>
+                </h3>
+
+                <p class="card-text">
+                  Challenge an opponent in the game of monopoly, whoever wins first gain reward!
+                </p>
+                <!-- <input type="text" class="form-control" placeholder="Sell price" /> -->
+                <a onclick="openModal(document.getElementById('modal_4'));" class="card-link">
+                  <span>Challenge</span>
+
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </a>
+
+              </div>
+            </li>
+            
+
+          </ul>
+
+        </div>
+      </section>
+
+
+
+
+
+
+
+
+
+      <!-- 
+        - #FEATURES
+      -->
+
+      <section class="property" id="property">
+        <div class="container">
+
+          <p class="section-subtitle">
+            LIVE NOW!!! (earn 100 token?)</p>
+
+          <h2 class="h2 section-title">Building Utilities</h2>
+
+          <ul class="features-list">
+
+            <li>
+      
+              <a onclick="stake_earn();" class="features-card">
+
+                <div class="card-icon">
+                  <ion-icon name="shield-checkmark-outline"></ion-icon>
+                </div>
+
+                <h3 class="card-title">Private Security</h3><small class="section-subtitle">stake 3000</small>
+
+                <div class="card-btn">
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </div>
+
+              </a>
+            </li>
+
+            <!-- <li>
+              <a onclick="stake_earn();" class="features-card">
+
+                <div class="card-icon">
+                  <ion-icon name="water-outline"></ion-icon>
+                </div>
+
+                <h3 class="card-title">Swimming Pool</h3><small>stake 3000</small>
+
+                <div class="card-btn">
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </div>
+
+              </a>
+            </li>
+
+            <li>
+              <a onclick="stake_earn();" class="features-card">
+
+                <div class="card-icon">
+                  <ion-icon name="shield-checkmark-outline"></ion-icon>
+                </div>
+
+                <h3 class="card-title">Parking Space</h3><small>stake 3000</small>
+
+                <div class="card-btn">
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </div>
+
+              </a>
+            </li>
+
+            <li>
+              <a onclick="stake_earn();" class="features-card">
+
+                <div class="card-icon">
+                  <ion-icon name="fitness-outline"></ion-icon>
+                </div>
+
+                <h3 class="card-title">Kitchen Food</h3><small>stake 3000</small>
+
+                <div class="card-btn">
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </div>
+
+              </a>
+            </li> -->
+
+          </ul>
+
+        </div>
+      </section>
+
+
+
+
+      <!-- 
+        - #PROPERTY
+      -->
+
+      <section class="features">
+        <div class="container">
+
+          <p class="section-subtitle">COMING SOON!!!(earn 2x)</p>
+
+          <h2 class="h2 section-title">Auction Hotel-Building</h2>
+
+          <ul class="property-list has-scrollbar">
+
+            <li>
+              <div class="property-card">
+
+                <figure class="card-banner">
+
+                  <a href="#">
+                    <img src="./assets/images/check1.jpg" alt="New Apartment Nice View" class="w-100">
+                  </a>
+
+                  <div class="card-badge orange">BID OPEN!!!</div>
+
+                  <div class="banner-actions">
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="location"></ion-icon>
+
+                      <address>Belmont Gardens, Chicago</address>
+                    </button>
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="camera"></ion-icon>
+
+                      <span>4</span>
+                    </button>
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="cash-outline"></ion-icon>
+
+                      <span>2</span>
+                    </button>
+                    
+
+                  </div>
+
+                </figure>
+
+                <div class="card-content">
+
+                  <div class="card-price">
+                    <strong>$15,000</strong>
+                  </div>
+
+                  <h3 class="h3 card-title">
+                    <a href="#">Comfortable Apartment</a>
+                  </h3>
+
+                  <p class="card-text">
+                    one of three rarest building earning you 2x based on who bid high, no Building utiities acitve!
+                  </p>
+
+                </div>
+
+                <div class="card-footer">
+
+                  <div class="card-author">
+
+                    <figure class="author-avatar">
+                      <img src="./assets/images/author.jpg" alt="William Seklo" class="w-100">
+                    </figure>
+
+                    <div>
+                      <p class="author-name">
+                        <a href="#">aleo1az...ru7m</a>
+                      </p>
+
+                      <p class="author-title">Aleo admin</p>
+                    </div>
+
+                  </div>
+
+                  <div class="card-footer-actions">
+
+                    <button class="card-footer-actions-btn" onclick="bid()">
+                      <ion-icon name="resize-outline"></ion-icon>
+                    </button>
+
+                    <button class="card-footer-actions-btn" onclick="bid_earn()">
+                      <ion-icon name="cash-outline"></ion-icon>
+                    </button>
+                    <button class="card-footer-actions-btn" onclick="claim_bid_earn()">
+                    <ion-icon name="ribbon-outline"></ion-icon>
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+            </li>
+
+            <li>
+              <div class="property-card">
+
+                <figure class="card-banner">
+
+                  <a href="#">
+                    <img src="./assets/images/property-4.png" alt="Modern Apartments" class="w-100">
+                  </a>
+
+                  <div class="card-badge orange">LOCKED!!!</div>
+
+                  <div class="banner-actions">
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="location"></ion-icon>
+
+                      <address>Belmont Gardens, Chicago</address>
+                    </button>
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="cash-outline"></ion-icon>
+
+                      <span>4</span>
+                    </button>
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="film"></ion-icon>
+
+                      <span>2</span>
+                    </button>
+
+                  </div>
+
+                </figure>
+
+                <div class="card-content">
+
+                  <div class="card-price">
+                    <strong>$15,000</strong>
+                  </div>
+
+                  <h3 class="h3 card-title">
+                    <a href="#">Comfortable Apartment</a>
+                  </h3>
+
+                  <p class="card-text">
+                    one of three rarest building earning you 2x based on who bid high, no Building utiities acitve!
+                  </p>
+
+                </div>
+
+                <div class="card-footer">
+
+                  <div class="card-author">
+
+                    <figure class="author-avatar">
+                      <img src="./assets/images/author.jpg" alt="William Seklo" class="w-100">
+                    </figure>
+
+                    <div>
+                      <p class="author-name">
+                        <a href="#">aleo1az...ru7m</a>
+                      </p>
+
+                      <p class="author-title">Aleo admin</p>
+                    </div>
+
+                  </div>
+
+                  <div class="card-footer-actions">
+
+                    <button class="card-footer-actions-btn">
+                      <ion-icon name="resize-outline"></ion-icon>
+                    </button>
+
+                    <button class="card-footer-actions-btn">
+                      <ion-icon name="cash-outline"></ion-icon>
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+            </li>
+
+            <li>
+              <div class="property-card">
+
+                <figure class="card-banner">
+
+                  <a href="#">
+                    <img src="./assets/images/check3.jpg" alt="Comfortable Apartment" class="w-100">
+                  </a>
+
+                  <div class="card-badge orange">LOCKED!!!</div>
+
+                  <div class="banner-actions">
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="location"></ion-icon>
+
+                      <address>Belmont Gardens, Chicago</address>
+                    </button>
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="camera"></ion-icon>
+
+                      <span>4</span>
+                    </button>
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="cash-outline"></ion-icon>
+
+                      <span>2</span>
+                    </button>
+
+                  </div>
+
+                </figure>
+
+                <div class="card-content">
+
+                  <div class="card-price">
+                    <strong>$15,000</strong>
+                  </div>
+
+                  <h3 class="h3 card-title">
+                    <a href="#">Comfortable Apartment</a>
+                  </h3>
+
+                  <p class="card-text">
+                    one of three rarest building earning you 2x based on who bid high, no Building utiities acitve!
+                  </p>
+
+                </div>
+
+                <div class="card-footer">
+
+                  <div class="card-author">
+
+                    <figure class="author-avatar">
+                      <img src="./assets/images/author.jpg" alt="William Seklo" class="w-100">
+                    </figure>
+
+                    <div>
+                      <p class="author-name">
+                        <a href="#">aleo1az...ru7m</a>
+                      </p>
+
+                      <p class="author-title">Aleo admin</p>
+                    </div>
+
+                  </div>
+
+                  <div class="card-footer-actions">
+
+                    <button class="card-footer-actions-btn">
+                      <ion-icon name="resize-outline"></ion-icon>
+                    </button>
+
+                    <button class="card-footer-actions-btn">
+                      <ion-icon name="cash-outline"></ion-icon>
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </section>
+
+
+
+
+
+
+
+       <!-- 
+        - #TOURNAMENT GAMES
+      -->
+
+      <section class="property" id="property">
+        <div class="container">
+
+          <p class="section-subtitle">COMING SOON!!!(earn 5000 tokens)</p>
+
+          <h2 class="h2 section-title">Tournament Games</h2>
+
+          <ul class="property-list has-scrollbar">
+
+            <li>
+              <div class="property-card">
+
+                <figure class="card-banner">
+
+                  <a href="#">
+                    <img src="./assets/images/animated2.gif" alt="New Apartment Nice View" class="w-100">
+                  </a>
+
+                  <div class="card-badge orange">Upcoming Game!!!</div>
+
+                  <div class="banner-actions">
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="location"></ion-icon>
+
+                      <address>Shanghai, China</address>
+                    </button>
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="camera"></ion-icon>
+
+                      <span>4</span>
+                    </button>
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="game-controller-outline"></ion-icon>
+
+                      <span>2</span>
+                    </button>
+
+                  </div>
+
+                </figure>
+
+                <div class="card-content">
+
+                  <div class="card-price">
+                    <strong>$11,500 &bull; Reward: 5,000</strong>
+                  </div>
+
+                  <h3 class="h3 card-title">
+                    <a href="#">Tournament ID #1</a>
+                  </h3>
+
+                  <p class="card-text">
+                    Play tournament games to earn more against unlimited players globally. Number of winners are set in contract. Compete, Earn more aggresively to earn 5,000 extra income!!!
+                  
+                  </p>
+
+                </div>
+
+                <div class="card-footer">
+
+                  <div class="card-author">
+
+                    <figure class="author-avatar">
+                      <img src="./assets/images/author.jpg" alt="William Seklo" class="w-100">
+                    </figure>
+
+                    <div>
+                      <p class="author-name">
+                        <a href="#">aleo1az...ru7m</a>
+                      </p>
+
+                      <p class="author-title">Aleo admin</p>
+                    </div>
+
+                  </div>
+
+                  <div class="card-footer-actions">
+
+                    <button class="card-footer-actions-btn">
+                      <ion-icon name="resize-outline"></ion-icon>
+                    </button>
+
+                    <button class="card-footer-actions-btn">
+                      <ion-icon name="game-controller-outline"></ion-icon>
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+            </li>
+
+            <li>
+              <div class="property-card">
+
+                <figure class="card-banner">
+
+                  <a href="#">
+                    <img src="./assets/images/animated3.gif" alt="Modern Apartments" class="w-100">
+                  </a>
+
+                  <div class="card-badge orange">coming soon!!!</div>
+
+                  <div class="banner-actions">
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="location"></ion-icon>
+
+                      <address>California, US</address>
+                    </button>
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="camera"></ion-icon>
+
+                      <span>4</span>
+                    </button>
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="game-controller-outline"></ion-icon>
+                      <span>2</span>
+                    </button>
+
+                  </div>
+
+                </figure>
+
+                <div class="card-content">
+
+                  <div class="card-price">
+                    <strong>$5,000</strong>
+                  </div>
+
+                  <h3 class="h3 card-title">
+                    <a href="#">Tournament ID #2</a>
+                  </h3>
+
+                  <p class="card-text">
+                    Play tournament games to earn more against unlimited players globally. Number of winners are set in contract. Compete, Earn more aggresively to earn 5,000 extra income!!!
+                  </p>
+
+                </div>
+
+                <div class="card-footer">
+
+                  <div class="card-author">
+
+                    <figure class="author-avatar">
+                      <img src="./assets/images/author.jpg" alt="William Seklo" class="w-100">
+                    </figure>
+
+                    <div>
+                      <p class="author-name">
+                        <a href="#">aleo1az...ru7m</a>
+                      </p>
+
+                      <p class="author-title">Aleo admin</p>
+                    </div>
+
+                  </div>
+
+                  <div class="card-footer-actions">
+
+                    <button class="card-footer-actions-btn">
+                      <ion-icon name="resize-outline"></ion-icon>
+                    </button>
+
+                    <button class="card-footer-actions-btn">
+                      <ion-icon name="game-controller-outline"></ion-icon>
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+            </li>
+
+            <li>
+              <div class="property-card">
+
+                <figure class="card-banner">
+
+                  <a href="#">
+                    <img src="./assets/images/animated1.gif" alt="Comfortable Apartment" class="w-100">
+                  </a>
+
+                  <div class="card-badge orange">coming soon!!!</div>
+
+                  <div class="banner-actions">
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="location"></ion-icon>
+
+                      <address>Port Harcourt, NG</address>
+                    </button>
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="camera"></ion-icon>
+
+                      <span>4</span>
+                    </button>
+
+                    <button class="banner-actions-btn">
+                      <ion-icon name="game-controller-outline"></ion-icon>
+
+                      <span>2</span>
+                    </button>
+
+                  </div>
+
+                </figure>
+
+                <div class="card-content">
+
+                  <div class="card-price">
+                    <strong>$5,000</strong>
+                  </div>
+
+                  <h3 class="h3 card-title">
+                    <a href="#">Tournament ID #3</a>
+                  </h3>
+
+                  <p class="card-text">
+                    Play tournament games to earn more against unlimited players globally. Number of winners are set in contract. Compete, Earn more aggresively to earn 5,000 extra income!!!
+                  </p>
+
+                </div>
+
+                <div class="card-footer">
+
+                  <div class="card-author">
+
+                    <figure class="author-avatar">
+                      <img src="./assets/images/author.jpg" alt="William Seklo" class="w-100">
+                    </figure>
+
+                    <div>
+                      <p class="author-name">
+                        <a href="#">aleo1az...ru7m</a>
+                      </p>
+
+                      <p class="author-title">Aleo admin</p>
+                    </div>
+
+                  </div>
+
+                  <div class="card-footer-actions">
+
+                    <button class="card-footer-actions-btn">
+                      <ion-icon name="resize-outline"></ion-icon>
+                    </button>
+
+                    <button class="card-footer-actions-btn">
+                      <ion-icon name="game-controller-outline"></ion-icon>
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </section>
+
+
+
+      <!-- 
+        - #BLOG
+      -->
+
+      <section class="blog" id="blog">
+        <div class="container">
+
+          <p class="section-subtitle">News & Blogs</p>
+
+          <h2 class="h2 section-title">Aleo NewsFeed</h2>
+
+          <ul class="blog-list has-scrollbar">
+
+            <li>
+              <div class="blog-card">
+
+                <figure class="card-banner">
+                  <img src="./assets/images/zPass_Hero.webp">
+                </figure>
+
+                <div class="blog-content">
+
+                  <div class="blog-content-top">
+
+                    <ul class="card-meta-list">
+
+                      <li>
+                        <a href="#" class="card-meta-link">
+                          <ion-icon name="person"></ion-icon>
+
+                          <span>by: Admin</span>
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="#" class="card-meta-link">
+                          <ion-icon name="pricetags"></ion-icon>
+
+                          <span>subscribe</span>
+                        </a>
+                      </li>
+
+                    </ul>
+
+                    <h3 class="h3 blog-title">
+                      <a href="#">Aleo: Introducing zPass</a>
+                    </h3>
+
+                  </div>
+
+                  <div class="blog-content-bottom">
+                    <div class="publish-date">
+                      <ion-icon name="calendar"></ion-icon>
+
+                      <time datetime="2023-23-10">OCTOBER 23, 2023</time>
+                    </div>
+
+                    <a href="https://aleo.org/post/introducing-zpass-aleos-pioneering-step-toward-privacy-preserving-digital/" class="read-more-btn">Read More</a>
+                  </div>
+
+                </div>
+
+              </div>
+            </li>
+
+            <li>
+              <div class="blog-card">
+
+                <figure class="card-banner">
+                  <img src="./assets/images/zk-cats-blog.webp">
+                </figure>
+
+                <div class="blog-content">
+
+                  <div class="blog-content-top">
+
+                    <ul class="card-meta-list">
+
+                      <li>
+                        <a href="#" class="card-meta-link">
+                          <ion-icon name="person"></ion-icon>
+
+                          <span>by: Admin</span>
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="#" class="card-meta-link">
+                          <ion-icon name="pricetags"></ion-icon>
+
+                          <span>subscribe</span>
+                        </a>
+                      </li>
+
+                    </ul>
+
+                    <h3 class="h3 blog-title">
+                      <a href="#">Aleo x Icebreaker: Get your zkCat NFT</a>
+                    </h3>
+
+                  </div>
+
+                  <div class="blog-content-bottom">
+                    <div class="publish-date">
+                      <ion-icon name="calendar"></ion-icon>
+
+                      <time datetime="2023-08-11">NOVEMBER 08, 2023</time>
+                    </div>
+
+                    <a href="https://aleo.org/post/aleo-icebreaker-get-your-zkcat-nft-zkhouse-devconnect-istanbul/" class="read-more-btn">Read More</a>
+                  </div>
+
+                </div>
+
+              </div>
+            </li>
+
+            <li>
+              <div class="blog-card">
+
+                <figure class="card-banner">
+                  <img src="./assets/images/aleo1.jpg"
+                    class="w-100">
+                </figure>
+
+                <div class="blog-content">
+
+                  <div class="blog-content-top">
+
+                    <ul class="card-meta-list">
+
+                      <li>
+                        <a href="#" class="card-meta-link">
+                          <ion-icon name="person"></ion-icon>
+
+                          <span>by: Admin</span>
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="#" class="card-meta-link">
+                          <ion-icon name="pricetags"></ion-icon>
+
+                          <span>subscribe</span>
+                        </a>
+                      </li>
+
+                    </ul>
+
+                    <h3 class="h3 blog-title">
+                      <a href="#">What is Aleo?</a>
+                    </h3>
+
+                  </div>
+
+                  <div class="blog-content-bottom">
+                    <div class="publish-date">
+                      <ion-icon name="calendar"></ion-icon>
+
+                      <time datetime="2022-27-04">Apr 27, 2022</time>
+                    </div>
+
+                    <a href="#" class="read-more-btn">Read More</a>
+                  </div>
+
+                </div>
+
+              </div>
+            </li>
+
+          </ul>
+
+        </div>
+      </section>
+
+
+
+ <!-- 
+        - #LEADERBOARD
+      -->
+
+      <section class="features">
+        <div class="container">
+
+          <p class="section-subtitle">Top 3 addresses? coming soon!)</p>
+
+          <h2 class="h2 section-title">LEADERBOARD</h2>
+
+          <ul class="features-list">
+
+            <li>
+              <a onclick="stake_earn();" class="features-card">
+
+                <div class="card-icon">
+                  <ion-icon name="car-sport-outline"></ion-icon>
+                </div>
+
+                <h3 class="card-title">aleo1aa...bbb<sup>1st</sup></h3><small class="section-subtitle">80000 MONO</small>
+
+                <div class="card-btn">
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </div>
+
+              </a>
+            </li>
+
+             <li>
+              <a onclick="stake_earn();" class="features-card">
+
+                <div class="card-icon">
+                  <ion-icon name="water-outline"></ion-icon>
+                </div>
+
+                <h3 class="card-title">aleo1bb...ccc<sup>2nd</sup></h3><small class="section-subtitle">75000 MONO</small>
+
+                <div class="card-btn">
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </div>
+
+              </a>
+            </li>
+
+            <li>
+              <a onclick="stake_earn();" class="features-card">
+
+                <div class="card-icon">
+                  <ion-icon name="shield-checkmark-outline"></ion-icon>
+                </div>
+
+                <h3 class="card-title">aleo1ccc...ddd<sup>3rd</sup></h3><small class="section-subtitle">70000 MONO</small>
+
+                <div class="card-btn">
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </div>
+
+              </a>
+            </li
+          </ul>
+
+        </div>
+      </section>
+
+
+
+      <!-- 
+        - #CTA
+      -->
+
+      <section class="cta">
+        <div class="container">
+
+          <div class="cta-card">
+            <div class="card-content">
+              <h2 class="h2 card-title">Are you a Leo developer?</h2>
+
+              <p class="card-text">Feel free to contribute to the Aleo-Monopoly project, new ideas are welcome...</p>
+            </div>
+
+            <button class="btn cta-btn">
+              <span>GITHUB</span>
+
+              <ion-icon name="arrow-forward-outline"></ion-icon>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+
+
+
+
+  <!-- 
+    - #FOOTER
+  -->
+
+  <footer class="footer">
+
+    <div class="footer-top">
+      <div class="container">
+
+        <div class="footer-brand">
+
+          <a href="#" class="logo">
+            <img src="./assets/images/aleo1.jpg" width="10%" height="10%"  alt="Homeverse logo"> 
+          </a>
+
+          <p class="section-text">
+            Aleo-Monopoly is a simple gaming using the ALEO Blockchain technology. Players must roll a dice to win or lose rent privately, stake token to earn more, bid super auction building, meet the reward required to mint privately as well...
+          </p>
+
+          <ul class="contact-list">
+
+            <li>
+              <a href="#" class="contact-link">
+                <ion-icon name="location-outline"></ion-icon>
+
+                <address>Nigeria</address>
+              </a>
+            </li>
+
+            <li>
+              <a href="tel:+0123456789" class="contact-link">
+                <ion-icon name="call-outline"></ion-icon>
+
+                <span>+0123-456789</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="mailto:aleo_monopoly@gmail.com" class="contact-link">
+                <ion-icon name="mail-outline"></ion-icon>
+
+                <!-- <span hidden="true">contact@aleo_monopoly.com</span> -->
+              </a>
+            </li>
+
+          </ul>
+
+          <ul class="social-list">
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-facebook"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-twitter"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-linkedin"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-youtube"></ion-icon>
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+        <div class="footer-link-box">
+
+          <ul class="footer-list">
+
+            <li>
+              <p class="footer-list-title">ALEO-MONOPOLY</p>
+            </li>
+
+            <li>
+              <a onclick="openModal(document.getElementById('modal_1'));" class="footer-link">About</a>
+            </li>
+
+            <li>
+              <a onclick="openModal(document.getElementById('modal_2'));" class="footer-link">FAQ</a>
+            </li>
+
+            <li>
+              <a href="https://x.com/aleo_monopoly" class="footer-link">Twitter</a>
+            </li>
+
+            <li>
+              <a href="https://github.com/Elexy101/Aleo-Monopoly" class="footer-link">Github</a>
+            </li>
+
+          </ul>
+
+          
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+
+        <p class="copyright">
+          &copy; 2023 <a href="#">Aleo-Monopoly</a>. All Rights Reserved
+        </p>
+
+      </div>
+    </div>
+
+  </footer>
+
+
+
+  <script src="aleo_function.js"></script>
+
+  <!-- 
+    - custom js link
+  -->
+  <script src="./assets/js/script.js"></script>
+
+
+  	 <!-- ALEO WALLET MAIN.JS -->
+<script src="./leo-wallet-bundle.js"></script>
+<script src="./transaction.js"></script> <!-- Include the Transaction definition -->
+
+  <!-- The *magical* script -->
+  <script src="./assets/js/fusilli.min.js"></script>
+  <script src="./assets/js/fusilli.js"></script>
+
+
+</body>
+
+</html>
