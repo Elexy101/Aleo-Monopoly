@@ -20,7 +20,7 @@
 
 //=============================================     Powered By Leo Programming    ==============================================
 
-program aleo_monopoly_workshop12.aleo{
+program aleo_monopoly_workshop6.aleo{
 
     // Game Record
    record Buildings{
@@ -34,13 +34,6 @@ program aleo_monopoly_workshop12.aleo{
         owner: address,
         versus_hash: field,
     }
-    
-    // Reward Record
-    record Reward {
-        owner: address,
-        amount: u64,
-    }
-
 
     // no tokens are minted upon token creation
     // admin can mint any amount of tokens up to total_supply
@@ -73,8 +66,14 @@ program aleo_monopoly_workshop12.aleo{
         max_building: u64,
         receiver: address,
         building_price: u64,
+        total_building: u64,
     }
 
+    // Reward Record
+    record Reward {
+        owner: address,
+        amount: u64,
+    }
 
     //admin control
     struct GlobalState {
@@ -83,12 +82,6 @@ program aleo_monopoly_workshop12.aleo{
         admin: address,
     }
 
-    //bidding struct
-    struct BiddingInfo {
-        building_id: field,
-        bidder: address,
-        amount: u64,
-    }
 
     //player against opponent struct
     struct Versus {
@@ -125,7 +118,7 @@ program aleo_monopoly_workshop12.aleo{
     mapping test_token: u64 => TestToken;
 
     //buildings ids mapped => buildings
-    mapping unique_building: address => BuildingInfo;
+    mapping unique_building: field => BuildingInfo;
 
     //new feature => staking/buying building utilites
     mapping stake_utility: address => u64;
@@ -136,22 +129,21 @@ program aleo_monopoly_workshop12.aleo{
     //true => GLOBAL TOURNAMENT STATE
     mapping global_tournament_state: field => Tournament;
 
-    //new feature => bidding special building
-    mapping special_building: field => BiddingInfo; 
-
     //mapping versus to player
     mapping versus_player: field => Versus;
+
 
    
    //==========================================================================
    // ============================ admin control ==============================
    //==========================================================================
     // Initialize the program after deployment.
-    transition init(b: bool) {
-        return then finalize(self.caller);
+    async transition init(b: bool) -> (address, Future) {
+        let caller: address = aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m ;
+        return (self.caller, finalize_init(caller));
     }
 
-    finalize init(caller: address) {
+    async function finalize_init(caller: address) {
         // init global state
         let gs: GlobalState = Mapping::get_or_use(global_state, true, GlobalState {
             next_token_id: 0field,
@@ -182,36 +174,32 @@ program aleo_monopoly_workshop12.aleo{
             total_supply: test_supply,
             admin: gs.admin,
         });
-
     }
 
     //========================================================================================
     //====================== Change the main admin of the program. ===========================
     //========================================================================================
-
-    transition change_admin(admin: address) {
-        return then finalize(self.caller, admin);
+    async transition change_admin(admin: address) -> (address, Future){
+        return (self.caller, finalize_admin(admin));
     }
-
-    finalize change_admin(caller: address, admin: address) {
+    async function finalize_admin(caller: address) {
         let gs: GlobalState = Mapping::get(global_state, true);
         assert_eq(caller, gs.admin);
         Mapping::set(global_state, true, GlobalState {
             next_token_id: gs.next_token_id,
-            admin: admin,
+            admin: caller,
         });
     }
-
 
 
     //===============================================================================================
     //======================= issue a monopoly token to a player ~ owner ============================
     //===============================================================================================
-    transition issue(private owner: address, private amount: u64) -> (address, u64){ 
-        return (owner, amount) then finalize (owner, amount);
+    async transition issue(owner: address, amount: u64) -> (address, u64, Future){ 
+        return (owner, amount, finalize_issue(owner, amount));
     }
         //================= MAPPING BALANCES TO ACCOUNT TO_ADDRESS =======================
-        finalize issue (owner: address, amount: u64) {
+        async function finalize_issue (owner: address, amount: u64) {
         //set number of supplys
         let test_supply: u64 = 15000000000000u64;        //set number of supplys
 
@@ -220,8 +208,10 @@ program aleo_monopoly_workshop12.aleo{
             next_token_id: 0field,
             admin: aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m,
         });
+
         //check if admin have approve admin state
         assert(gs.next_token_id == 1field);
+
         let test_token_info: TestToken = Mapping::get_or_use(test_token, test_supply, TestToken {
             name: 4577111110111112111108121field,
             symbol: 4577111110111112111108121field,
@@ -230,12 +220,16 @@ program aleo_monopoly_workshop12.aleo{
             total_supply: test_supply,
             admin: gs.admin,
         });
+
         let owner_amount: u64 = Mapping::get_or_use(account, owner, 0u64);      
+        
         // Ensure the circulating <= max_supply
         let updated_circulating: u64 = test_token_info.circulating_supply + amount;
         assert(updated_circulating <= test_token_info.total_supply);
+
         //asserting amount to owner balance as to avoid overminting owner token balances via aleo.tools 
         assert(amount == 10000u64);
+
         // test token supply 
         Mapping::set(test_token, test_supply, TestToken {
             name: test_token_info.name,
@@ -245,13 +239,14 @@ program aleo_monopoly_workshop12.aleo{
             total_supply: test_token_info.total_supply,
             admin: gs.admin,
         });
+
         //try limit user from minting twice also
         assert(owner_amount == 0u64);
+
         // Increments `account[to_address]` by `amount`.
         Mapping::set(account, owner, owner_amount + amount);
 
     }
-
 
 
 
@@ -260,7 +255,7 @@ program aleo_monopoly_workshop12.aleo{
     //================================================================================================
     //user can purchase a building or even more building depending on how much token owned equivalent to building price
     //for every x purchase of building, the building price is appreciated
-    transition monopoly_buy (private owner: address, private amount: u64, private buildings: u64) -> (Buildings, u64) {
+    async transition monopoly_buy (owner: address,  amount: u64,  buildings: u64) -> (Buildings, u64, Future) {
         //setting the max for unique buildings
         let max_building: u64 = 1u64;
         //spend amount
@@ -271,43 +266,53 @@ program aleo_monopoly_workshop12.aleo{
             amount:  amount - spend_amount,
             buildings: buildings,
         };
-        return (buy_to, spend_amount)  then finalize (owner, spend_amount, max_building);
+        return (buy_to, spend_amount, finalize_monopoly_buy(owner, spend_amount, max_building)); 
     }
         //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
-        finalize monopoly_buy (owner: address, spend_amount: u64, max_building: u64) {
+        async function finalize_monopoly_buy (owner: address, spend_amount: u64, max_building: u64) {
+        let hash_user_field: field = Keccak512::hash_to_field(owner);
+        
         //check if user have requested issue yet above 0u64, otherwise throw error
         let issue_exists: u64 = Mapping::get_or_use(account, owner, 0u64);
         assert(issue_exists > 0u64);
-        // Decrements `account[to_address]` by `amount`.
-        let owner_amount: u64 = Mapping::get_or_use(account, owner, 0u64);
-        Mapping::set(account, owner, owner_amount - spend_amount);
-        //checks if `owner` building had purchased the Building, if not revert()
-        let new_building: u64 = 0u64;
+
         //random id for B_ID => Building ID
         let B_ID: field = ChaCha::rand_field();
 
-        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, owner, BuildingInfo {
+        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, hash_user_field, BuildingInfo {
             building_id: B_ID,
-            max_building: new_building,
+            max_building: 0u64,
             receiver: owner,
             building_price: spend_amount,
+            total_building: 0u64,
         });
+        
+        // Decrements `account[to_address]` by `amount`.
+        let owner_amount: u64 = Mapping::get_or_use(account, owner, 0u64);
+        Mapping::set(account, owner, owner_amount - building_info.building_price);
+
+
         //check if a user have enough money to buy building
         assert(owner_amount > building_info.building_price);
+
         //check if receiver is owner
         assert(building_info.receiver == owner);
+
         //check only if max building >= 0u64
         assert(building_info.max_building >= 0u64);
+
+        //check if total buildings still remain or bought all
+        assert(building_info.total_building <= 100000u64);
+
         //Increment `unique_building[owner]` building by +1
-        Mapping::set(unique_building, owner, BuildingInfo {
+        Mapping::set(unique_building, hash_user_field, BuildingInfo {
             building_id: building_info.building_id,
             max_building: (building_info.max_building + max_building),
             receiver: building_info.receiver,
             building_price: (building_info.building_price + 1000u64), //for every purchase, the building price is inflated 2000 token up [ie 6000u64 + 2000u64 = 8000u64]
+            total_building: building_info.total_building + max_building,
         });
     }
-
-
 
 
     //====================================================================================================
@@ -315,27 +320,31 @@ program aleo_monopoly_workshop12.aleo{
     //====================================================================================================
     //address is deducted/added rent of 150 token per tx run which is based on random function using Chacha::Random
     //the roll up is based on head/tail event such that if a user roll less than given random, user amount is either deducted or added
-    transition monopoly_rent (private owner: address, private amount: u64, private buildings: u64) -> (Buildings, u64){
+    async transition monopoly_rent (owner: address, amount: u64, buildings: u64) -> (Buildings, u64, Future){
         //setting the max for unique buildings
         let max_building: u64 = 1u64;
+
         // setting amount.
         let rent_amount: u64 = 150u64; //i pay some rent fee
+
         let rent_to : Buildings = Buildings{
             owner: owner,
             amount:  amount,
             buildings: buildings,
         };
-             return (rent_to, rent_amount) then finalize (owner, rent_amount, max_building);
+             return (rent_to, rent_amount, finalize_monopoly_rent(owner, rent_amount, max_building));
     }
         //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
-        finalize monopoly_rent (owner: address, rent_amount: u64, max_building: u64) {
-
+        async function finalize_monopoly_rent (owner: address, rent_amount: u64, max_building: u64) {
+        let hash_user_field: field = Keccak512::hash_to_field(owner);
+        
         //checks if `owner` building had purchased the Building, if not revert()
-        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, owner, BuildingInfo {
+        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, hash_user_field, BuildingInfo {
             building_id: 123field,
             max_building: 0u64,
             receiver: owner,
             building_price: 0u64,
+            total_building: 0u64,
         });
         //check if receiver is owner
         assert(building_info.receiver == owner);
@@ -345,15 +354,19 @@ program aleo_monopoly_workshop12.aleo{
         //check if user have requested issue yet above 0u64, otherwise throw error
         let issue_exists: u64 = Mapping::get_or_use(account, owner, 0u64);
         assert(issue_exists > 0u64);
+
         //self.caller mapped balance
         let owner_amount: u64 = Mapping::get_or_use(account, owner, 0u64);
+ 
         //roll the head/tail event, you can either win/lose 
         let randomness: u64 = ChaCha::rand_u64();
         //Mapping::set(account, owner, ((randomness==2u8) || (randomness==3u8) || (randomness==5u8) || (randomness==7u8) || (randomness==11u8) || (randomness==13u8) || (randomness==17u8) || (randomness==19u8) || (randomness==23u8) || (randomness==29u8) || (randomness==31u8) || (randomness==37u8) || (randomness==41u8) || (randomness==43u8) || (randomness==47u8) || (randomness==53u8) || (randomness==59u8) || (randomness==61u8) || (randomness==67u8) || (randomness==71u8) || (randomness==73u8) || (randomness==79u8) || (randomness==83u8) || (randomness==89u8) || (randomness==97u8) || (randomness==101u8) || (randomness==103u8) || (randomness==107u8) || (randomness==109u8) || (randomness==113u8) || (randomness==127u8) || (randomness==131u8) || (randomness==137u8) || (randomness==139u8) || (randomness==149u8) || (randomness==151u8) || (randomness==157u8) || (randomness==163u8) || (randomness==167u8) || (randomness==173u8) || (randomness==179u8) || (randomness==181u8) || (randomness==191u8) || (randomness==193u8) || (randomness==197u8) || (randomness==199u8) || (randomness==211u8) || (randomness==223u8) || (randomness==227u8) || (randomness==229u8) || (randomness==233u8) || (randomness==239u8) || (randomness==241u8) || (randomness==251u8)) ? owner_amount + 150u64 : owner_amount - 150u64);
         //hash the roll dice,set in array at first => 18446744073709551615u64{FULL},    9223372036854775807.5{HALF}
         Mapping::set(account, owner, 9223372036854775808u64 > randomness ? owner_amount + (building_info.max_building * 150u64) : owner_amount - (building_info.max_building * 150u64));
+
         //check if a user address stake the building utility
         let stake_exists: u64 = Mapping::get_or_use(stake_utility, owner, 0u64);
+
         //apply tenary to mapping => staking to earn
         //Mapping::set(account, owner, (stake_exists == 3000u64) ? owner_amount + 100u64 : owner_amount + 0u64);
         Mapping::set(stake_utility, owner, (stake_exists >= 3000u64) ? stake_exists + 100u64 : stake_exists + 0u64);
@@ -361,113 +374,82 @@ program aleo_monopoly_workshop12.aleo{
 
 
 
-    //==========================================================================================
-    //============================ MONOPOLY SALE TOKEN(coming soon)=============================
-    //==========================================================================================
-    transition monopoly_sale (private owner: address, private to_address: address ) -> (address, u64){
-        return  then finalize (owner, to_address);
+
+   //======================================================================================================
+    //============================ MONOPOLY SALE TOKEN(sale building to admin)=============================
+    //=====================================================================================================
+    async transition monopoly_sale (owner: address, to_address: address ) -> (address, address, Future){
+
+        return (owner, to_address, finalize_monopoly_sale(owner, to_address));
     }
         //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
-        finalize monopoly_sale (owner: address, to_address: address) {
+    async function finalize_monopoly_sale (owner: address, to_address: address) {
+        let hash_user_field: field = Keccak512::hash_to_field(owner);
+        let hash_receiver_field: field = Keccak512::hash_to_field(to_address);
 
         //checks if `owner` building had purchased the Building, if not revert()
-        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, owner, BuildingInfo {
+        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, hash_user_field, BuildingInfo {
             building_id: 123field,
             max_building: 0u64,
             receiver: owner,
             building_price: 0u64,
+            total_building: 0u64,
         });
         //check if receiver is owner
         assert(building_info.receiver == owner);
         //check only if max building = 1u64
         assert(building_info.max_building >= 1u64);
+
         //check if user => owner have requested issue yet above 0u64, otherwise throw error
         let issue_exists: u64 = Mapping::get_or_use(account, owner, 0u64);
         assert(issue_exists > 0u64);
+
         //check if user => to_address have requested issue yet above 0u64, otherwise throw error
         let issue_exists_to: u64 = Mapping::get_or_use(account, to_address, 0u64);
         assert(issue_exists_to >= 5000u64);
+
         //assigned that I CAN ONLY SALE TO `to_address` my building => The contract admin
         assert_eq(to_address, aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m);
+
         // Checking if all condition is true, user must unstake before sale of asset Building.
         let staking_amount: u64 = Mapping::get_or_use(stake_utility, owner, 0u64);
         assert(staking_amount == 0u64);
+
         // Decrements `account[to_address]` by `amount`.
         let to_address_amount: u64 = Mapping::get_or_use(account, to_address, 0u64);
         //Mapping::set(account, to_address, (building_info.max_building * (to_address_amount - sale_amt)));
          Mapping::set(account, to_address, to_address_amount - (building_info.max_building * building_info.building_price));
+
         // Increments `account[owner]` by `amount`.
         let owner_amount: u64 = Mapping::get_or_use(account, owner, 0u64);
         Mapping::set(account, owner, owner_amount + (building_info.max_building * building_info.building_price));
+
         //Remove Building mapped => owner 
         let new_building_owner: u64 = building_info.max_building;
         assert(new_building_owner <= building_info.max_building);
-        Mapping::set(unique_building, owner, BuildingInfo {
+        Mapping::set(unique_building, hash_user_field, BuildingInfo {
             building_id: building_info.building_id,
             max_building: new_building_owner,
             receiver: owner,
-            building_price: building_info.building_price,
+            building_price: (building_info.building_price - 600u64),
+            total_building: (building_info.total_building - building_info.max_building),
         });
+
         //Add Building mapped => to_address 
         let new_building_to_address: u64 = building_info.max_building + new_building_owner;
         assert(new_building_to_address >= building_info.max_building);
-        Mapping::set(unique_building, to_address, BuildingInfo {
+        Mapping::set(unique_building, hash_receiver_field, BuildingInfo {
             building_id: building_info.building_id,
             max_building: new_building_to_address,
             receiver: to_address,  //my own address or some dummy address to be storing buildings (my address: aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m)
             building_price: building_info.building_price,
+            total_building: building_info.total_building
         });
+
         //Remove mapping for => owner
-        Mapping::remove(unique_building, owner);
+        Mapping::remove(unique_building, hash_user_field);
     }
 
-
-
-//============================================================================================
-//============================ MONOPOLY MYSTERY CARD =========================================
-//============================================================================================
-transition mystery_card(private owner: address, private amount: u64, private buildings: u64) -> (Buildings, u64) {
-        //setting the max for unique buildings
-        let max_building: u64 = 1u64;
-
-        // setting amount.
-        let mystery_amount : u64 = 1500u64;
-
-        let mystery : Buildings = Buildings{
-            owner: owner,
-            amount: amount,
-            buildings: buildings,
-        };
-
-     return(mystery, mystery_amount) then finalize(owner, mystery_amount, max_building);
-}
-     //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
-        finalize mystery_card (owner: address, mystery_amount: u64, max_building: u64) {
-        //checks if `owner` building had purchased the Building, if not revert()
-        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, owner, BuildingInfo {
-            building_id: 123field,
-            max_building: 0u64,
-            receiver: owner,
-            building_price: 0u64,
-        });
-        //check if receiver is owner
-        assert(building_info.receiver == owner);
-        //check only if max building = 1u64
-               assert(building_info.max_building >= 1u64);
-
-        //check if user have requested issue yet above 0u64, otherwise throw error
-        let issue_exists: u64 = Mapping::get_or_use(account, owner, 0u64);
-        assert(issue_exists > 0u64);
-        
-        // get your mystery token.
-        let owner_amount: u64 = Mapping::get_or_use(account, owner, 0u64);
-        
-        //roll the head/tail event, you can either win/lose  => 18446744073709551615u64{FULL},    9223372036854775807.5{HALF}
-        let randomness: u64 = ChaCha::rand_u64(); //need to convert every u64 => u8 amount and re
-
-        //Mapping::set(account,owner, ((randomness==9u8) || (randomness==18u8) || (randomness==27u8) || (randomness==36u8) || (randomness==45u8) || (randomness==54u8) || (randomness==63u8) || (randomness==72u8) || (randomness==81u8) || (randomness==90u8) || (randomness==99u8) || (randomness==108u8) || (randomness==117u8) || (randomness==126u8) || (randomness==135u8) || (randomness==144u8) || (randomness==153u8) || (randomness==162u8) || (randomness==171u8) || (randomness==180u8) || (randomness==189u8) || (randomness==192u8) || (randomness==201u8) || (randomness==210u8) || (randomness==219u8) || (randomness==228u8) || (randomness==237u8) || (randomness==246u8) || (randomness==255u8)) ? owner_amount + 1500u64 : owner_amount - 1500u64);
-        Mapping::set(account, owner, randomness >= 18446744073709551615u64 ? (building_info.max_building * 1500u64) : owner_amount - (building_info.max_building * 1500u64));
-    }
 
 
 
@@ -477,7 +459,7 @@ transition mystery_card(private owner: address, private amount: u64, private bui
 //user can stake 3000 token to earn for every rent roll head/tail a 100 token added => just a hedge against loss in game
 //staked amount must be withdraw all before you can sale your building to contract
 //=============================================================================================
-transition staking_utility(private owner: address, private amount: u64, private buildings: u64) -> (Buildings, u64) {        
+async transition staking_utility(owner: address, amount: u64, buildings: u64) -> (Buildings, u64, Future) {        
         //define token_action
         let token_action: u64 = 3000u64;
 
@@ -487,21 +469,23 @@ transition staking_utility(private owner: address, private amount: u64, private 
             buildings: buildings,
         };
 
-     return(stake, token_action) then finalize(owner, token_action);
+     return(stake, token_action, finalize_staking_utility(owner, token_action));
 }
      //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
-        finalize staking_utility (owner: address,  token_action: u64) {
+        async function finalize_staking_utility (owner: address,  token_action: u64) {
+        let hash_user_field: field = Keccak512::hash_to_field(owner);
         //checks if `owner` building had purchased the Building, if not revert()
-        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, owner, BuildingInfo {
+        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, hash_user_field, BuildingInfo {
             building_id: 123field,
             max_building: 0u64,
             receiver: owner,
             building_price: 0u64,
+            total_building: 0u64,
         });
         //check if receiver is owner
         assert(building_info.receiver == owner);
         //check only if max building = 1u64
-               assert(building_info.max_building >= 1u64);
+        assert(building_info.max_building >= 1u64);
 
         //check if user have requested issue yet above 3000u64, otherwise throw error
         let issue_exists: u64 = Mapping::get_or_use(account, owner, 0u64);
@@ -524,7 +508,7 @@ transition staking_utility(private owner: address, private amount: u64, private 
 //=============================================================================================
 //====================== MONOPOLY UNSTAKE TO GET EARNED TOKEN MODE ============================
 //=============================================================================================
-transition unstaking_utility(private owner: address, private amount: u64, private buildings: u64) -> (Buildings, u64) {
+async transition unstaking_utility(owner: address, amount: u64, buildings: u64) -> (Buildings, u64, Future) {
         //define token_action
         let token_action: u64 = 3000u64;
 
@@ -534,16 +518,18 @@ transition unstaking_utility(private owner: address, private amount: u64, privat
             buildings: buildings,
         };
 
-     return(unstake, token_action) then finalize(owner, token_action);
+     return(unstake, token_action, finalize_unstaking_utility(owner, token_action));
 }
      //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
-        finalize unstaking_utility (owner: address, token_action: u64) {
+        async function finalize_unstaking_utility (owner: address, token_action: u64) {
+        let hash_user_field: field = Keccak512::hash_to_field(owner);
         //checks if `owner` building had purchased the Building, if not revert()
-        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, owner, BuildingInfo {
+        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, hash_user_field, BuildingInfo {
             building_id: 123field,
             max_building: 0u64,
             receiver: owner,
             building_price: 0u64,
+            total_building: 0u64,
         });
         //check if receiver is owner
         assert(building_info.receiver == owner);
@@ -569,187 +555,13 @@ transition unstaking_utility(private owner: address, private amount: u64, privat
 
 
 
-//=============================================================================================
-//============================== MONOPOLY BIDDING TO EARN 2X ==================================
-//The bidding is a private bidup amonng all players. players are privileged to view just balance of current bidder(which is hashed)
-//if a player bid higher than current player, the player becomes the owner of building as top bidder
-//=============================================================================================
-transition bidding_info(private owner: address, private amount: u64) -> (BiddingInfo, u64) {
-        let bidding : BiddingInfo = BiddingInfo{
-            building_id: 1151121019910597108field,
-            bidder: owner,
-            amount: amount,
-        };
-     return(bidding, amount) then finalize(owner, amount);
-}
-     //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
-        finalize bidding_info (owner: address,  amount: u64) {
-        //checks if `owner` building had purchased the Building, if not revert()
-        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, owner, BuildingInfo {
-            building_id: 123field,
-            max_building: 0u64,
-            receiver: owner,
-            building_price: 0u64,
-        });
-        //check if receiver is owner
-        assert(building_info.receiver == owner);
-        //check only if max building = 1u64
-        assert(building_info.max_building >= 1u64);
-
-        //check if user have permission to bid yet above 15000u64, otherwise throw error
-        let issue_exists: u64 = Mapping::get_or_use(account, owner, 0u64);
-        assert(issue_exists >= 15000u64);
-
-        //Decrement `account[owner]` by `amount` used for bidding
-        let owner_amount: u64 = Mapping::get_or_use(account, owner, 0u64);
-        Mapping::set(account, owner, owner_amount - amount);
-
-        //`special`keyword id for B_ID 
-        let B_ID: field = 1151121019910597108field;
-
-        //hash the owner address such that its not reveal the identity of owner address to public
-        let hash_user: address = Keccak512::hash_to_address(owner);
-
-        //get the bidding mapping id
-        let bid_info: BiddingInfo = Mapping::get_or_use(special_building, B_ID, BiddingInfo {
-            building_id: B_ID,
-            bidder: hash_user,
-            amount: 0u64,
-        });
-        //check if amount(owner) > BiddingInfo owner amount
-        assert(amount > bid_info.amount);
-
-        //check that mapped bidder doesnt bid more than once in the game bidding
-        assert_neq(hash_user, bid_info.bidder);
-
-        //sending the bidding amount back to previous bidder `account` balance in case a new bidder bid higher
-        let previous_bidder: u64 = Mapping::get_or_use(account, bid_info.bidder, 0u64);
-        Mapping::set(account, bid_info.bidder, previous_bidder + bid_info.amount);
-
-        // add the new bid amount by owner.
-        Mapping::set(special_building, B_ID, BiddingInfo {
-            building_id: bid_info.building_id,
-            bidder: hash_user,
-            amount: amount,
-        }); 
-    }
-
-
-
-/*
-//=============================================================================================
-//============================ MONOPOLY UNBIDDING  ADDED EARNED GAIN ==========================
-//=============================================================================================
-transition unbidding_info(private owner: address, private amount: u64) -> (BiddingInfo, u64) {
-
-        let bidding : BiddingInfo = BiddingInfo{
-            building_id: 1151121019910597108field,
-            bidder: owner,
-            amount: amount,
-        };
-
-     return(bidding, amount) then finalize(owner, amount);
-}
-     //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
-        finalize unbidding_info (owner: address,  amount: u64) {
-        let hash_user_field: field = Keccak512::hash_to_field(owner);
-        //checks if `owner` building had purchased the Building, if not revert()
-        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, hash_user_field, BuildingInfo {
-            building_id: 123field,
-            max_building: 0u64,
-            receiver: owner,
-            building_price: 0u64,
-        });
-        //check if receiver is owner
-        assert(building_info.receiver == owner);
-        //check only if max building = 1u64
-        assert(building_info.max_building >= 1u64);
-
-        //`special`keyword id for B_ID 
-        let B_ID: field = 1151121019910597108field;
-        
-        //hash the owner address such that its not reveal the identity of owner address to public
-        let hash_user: address = Keccak512::hash_to_address(owner);
-        
-        //get the bidding mapping id
-        let bid_info: BiddingInfo = Mapping::get_or_use(special_building, B_ID, BiddingInfo {
-            building_id: B_ID,
-            bidder: hash_user,
-            amount: 0u64,
-        });
-        //check if bidder owner matched with hash_user
-        assert_eq(bid_info.bidder, hash_user);
-
-        //claim bidding reward to account owner => 450u64 token
-        let issue_exists: u64 = Mapping::get_or_use(account, owner, 0u64);
-        Mapping::set(account, owner, issue_exists + bid_info.amount);
-
-        //removing the mapping for bidded owner
-        Mapping::remove(special_building, B_ID);
-    }
-*/
-
-
-
-
-
-//=============================================================================================
-//============================== CLAIM BIDDING REWARD TO EARN 2X ==============================
-//top bidder can claim user once at a time and can possibly bid again if there are no competitor address bidding against its amount
-//=============================================================================================
-transition claim_bidding_reward(private owner: address, private amount: u64) -> (BiddingInfo, u64) {
-        let bidding : BiddingInfo = BiddingInfo{
-            building_id: 1151121019910597108field,
-            bidder: owner,
-            amount: amount,
-        };
-
-     return(bidding, amount) then finalize(owner, amount);
-}
-     //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
-        finalize claim_bidding_reward (owner: address,  amount: u64) {
-        //checks if `owner` building had purchased the Building, if not revert()
-        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, owner, BuildingInfo {
-            building_id: 123field,
-            max_building: 0u64,
-            receiver: owner,
-            building_price: 0u64,
-        });
-        //check if receiver is owner
-        assert(building_info.receiver == owner);
-        //check only if max building = 1u64
-        assert(building_info.max_building >= 1u64);
-
-        //`special`keyword id for B_ID 
-        let B_ID: field = 1151121019910597108field;
-        
-        //hash the owner address such that its not reveal the identity of owner address to public
-        let hash_user: address = Keccak512::hash_to_address(owner);
-        
-        //get the bidding mapping id
-        let bid_info: BiddingInfo = Mapping::get_or_use(special_building, B_ID, BiddingInfo {
-            building_id: B_ID,
-            bidder: hash_user,
-            amount: 0u64,
-        });
-        //check if bidder owner matched with hash_user
-        assert_eq(bid_info.bidder, hash_user);
-
-        //claim bidding reward to account owner => 450u64 token
-        let issue_exists: u64 = Mapping::get_or_use(account, owner, 0u64);
-        Mapping::set(account, owner, (issue_exists + bid_info.amount) + (building_info.max_building * 1000u64));
-        
-        //removing the mapping for bidded owner
-        Mapping::remove(special_building, B_ID);
-    }
-
 
 
 
 //==============================================================================================
 //=================================== REWARD FOR TO_ADDRESS ====================================
 //==============================================================================================
-transition mint_reward(private owner: address, private amount: u64) -> Reward {
+async transition mint_reward(owner: address, amount: u64) -> (Reward, Future) {
        
         // Produce a token record for the specified receiver.
         let receive_reward: Reward = Reward {
@@ -758,10 +570,10 @@ transition mint_reward(private owner: address, private amount: u64) -> Reward {
         };
 
         // Output the sender's change record and the receiver's record.
-        return receive_reward then finalize(self.caller, amount);
+        return (receive_reward, finalize_mint_reward(owner, amount));
     }
 
-        finalize mint_reward(owner: address, amount: u64) {
+        async function finalize_mint_reward(owner: address, amount: u64) {
         //set number of supplys
         let supply_reward: u64 = 15000000000000u64;
 
@@ -807,144 +619,15 @@ transition mint_reward(private owner: address, private amount: u64) -> Reward {
 
 
 
-
-  //==========================================================================
-   // ==================== tournament admin control ===========================
-   //==========================================================================
-    // Initialize the program after deployment.
-    transition init_tournament(tournament_id: field, target_amt: u64, criteria_amt: u64, winners: u64, active: bool) {
-        return then finalize(self.caller, tournament_id, target_amt, criteria_amt, winners, active);
-    }
-
-    finalize init_tournament(caller: address, tournament_id: field, target_amt: u64, criteria_amt: u64, winners: u64, active: bool) {
-        // init global state
-        let gts: Tournament = Mapping::get_or_use(global_tournament_state, 123field, Tournament {
-            tournament_id: tournament_id, //monopoly game tournament name
-            target_amount: 0u64,
-            criteria_amount: 0u64,
-            winners: 0u64,
-            winners_active: false,
-            active: true,
-            admin: aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m
-        });
-        assert_eq(caller, gts.admin);
-
-        //tournament id for TOURNAMENT ID
-        //let TOUR_ID: field = ChaCha::rand_field();
-        Mapping::set(global_tournament_state, tournament_id, Tournament {
-            tournament_id: tournament_id, //monopoly game tournament name
-            target_amount: target_amt,
-            criteria_amount: criteria_amt,
-            winners: winners,
-            winners_active: false,
-            active: true,
-            admin: gts.admin
-        });
-    }
-
-
-
-
-
-
-
-
-
-   //==========================================================================
-   // ========================= tournament control ============================
-   //==========================================================================
-    // Initialize the program after deployment.
-    transition tournament_game(owner: address) {
-        return then finalize(owner);
-    }
-
-    finalize tournament_game(owner: address) {
-        // init global state
-        let gts: Tournament = Mapping::get_or_use(global_tournament_state, 123field, Tournament {
-            tournament_id: 123field, //monopoly game tournament name
-            target_amount: 0u64,
-            criteria_amount: 0u64,
-            winners: 0u64,
-            winners_active: false,
-            active: true,
-            admin: aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m
-        });
-
-        assert_eq(gts.active, true); //make sure game is active
-        //assert_eq(owner, gts.gamer); //check if player match player tournament 
-
-        //check if user have reached criteria amount and have goal-match target amount in the game
-        let issue_exists: u64 = Mapping::get_or_use(account, owner, 0u64);
-        assert(issue_exists >= gts.target_amount && issue_exists >= gts.criteria_amount);
-
-        //check max winners if its up to selected winners selected
-        assert(gts.winners_active == false);
-        let add_winner: u64 = gts.winners - 1u64;
-
-        //check if there is still pace to claim, if winners reach 0u64, end tournament
-        assert(gts.winners > 0u64);
-        //then add reward to winners automatically if they check tournament to win otherwise revert
-        let tournament_reward: u64 = Mapping::get_or_use(get_reward, owner, 0u64);
-        Mapping::set(get_reward, owner, tournament_reward + 5000u64); //every tournament has a goal reward of 5000 token allocated to user reward mapped key
-       
-
-        Mapping::set(global_tournament_state, gts.tournament_id, Tournament {
-            tournament_id: gts.tournament_id, //monopoly game tournament name
-            target_amount: gts.target_amount,
-            criteria_amount: gts.criteria_amount,
-            winners: add_winner,
-            winners_active: true,
-            active: true,
-            admin: aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m
-        });
-    }
-
-
-
-   //==========================================================================
-   // =================== END tournament admin control  =======================
-   //==========================================================================
-   // Bug in this admin end control is that its manually controlled by admin,
-   // Admin must be active/online to end the tournament round
-
-    transition end_tournament(tournament_id: field, b: bool) {
-        return then finalize(tournament_id, self.caller);
-    }
-
-    finalize end_tournament(tournament_id: field, caller: address) {
-        // init global state
-        let gts: Tournament = Mapping::get_or_use(global_tournament_state, 123field, Tournament {
-            tournament_id: 123field, //monopoly game tournament name
-            target_amount: 0u64,
-            criteria_amount: 0u64,
-            winners: 0u64,
-            winners_active: false,
-            active: true,
-            admin: aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m
-        });
-        //check if admin matched admin address
-        assert_eq(caller, gts.admin);
-
-        //check the assigned tournament id to be removed, other tournament remains...
-        assert_eq(tournament_id, gts.tournament_id);
-
-        //check if winners have reached climax before ending tournament game, otherwise game cannot end!
-        assert_eq(gts.winners, 0u64);
-
-        //REMOVE TOURNAMENT ID
-        Mapping::remove(global_tournament_state, gts.tournament_id);
-    }
-
-
-
     //============================================================================================
     //==================== MONOPOLY PLAYER GAME AGAINST OPPONENT ADDRESS =========================
     //============================================================================================
-    transition play_request(owner: address, opponent: address) {
-        return then finalize(self.caller, opponent);
+    async transition play_request(owner: address, opponent: address) -> (Future) {
+        return (finalize_play_request(owner, opponent));
     }
+
     //finalize  `player_request`
-    finalize play_request(owner: address, opponent: address) {
+    async function finalize_play_request(owner: address, opponent: address) {
         
         // init versus request
         let versus_request : Versus = Mapping::get_or_use(versus_player, 123field, Versus {
@@ -959,14 +642,21 @@ transition mint_reward(private owner: address, private amount: u64) -> Reward {
 
         //check that owner is not same as `opponent`
         assert_neq(owner, opponent);
+
         //check that game is played against one opponent at a time
         assert_eq(versus_request.max_game, 0u8);
+
         //getting the mapped balance of owner, opponent
         let owner_balance: u64 = Mapping::get_or_use(account, owner, 0u64);
         let opponent_balance: u64 =  Mapping::get_or_use(account, opponent, 0u64);
+
         //check if owner and opponent have enough balance [>= 1000u64]
         assert(owner_balance >= 1000u64);
         assert(opponent_balance >= 1000u64);
+        
+        //setting goal
+        //let owner_set_goal: u64 = (owner_balance + 1000u64);
+        //let opponent_set_goal: u64 = (opponent_balance + 1000u64);
         
         //hash the owner address such that its not reveal the identity of owner address to public
         let hash_owner: field = Keccak512::hash_to_field(owner);
@@ -984,7 +674,9 @@ transition mint_reward(private owner: address, private amount: u64) -> Reward {
             player_goal: 0u64,
             opponent_goal: 0u64,
             max_game: 0u8,
-        });  
+        });
+
+        
     }
 
 
@@ -994,12 +686,12 @@ transition mint_reward(private owner: address, private amount: u64) -> Reward {
     //============================================================================================
     //==================== MONOPOLY ACCEPT GAME AGAINST OPPONENT ADDRESS =========================
     //============================================================================================
-    transition accept_request(owner: address, opponent: address, game_hash: field) {
-        return then finalize(self.caller, opponent, game_hash);
+    async transition accept_request(owner: address, opponent: address, game_hash: field) -> (Future){
+        return (finalize_accept_request(self.caller, opponent, game_hash));
     }
 
     //finalize  `player_request`
-    finalize accept_request(owner: address, opponent: address, game_hash: field) {
+    async function finalize_accept_request(owner: address, opponent: address, game_hash: field) {
         
         // init versus request
         let versus_request : Versus = Mapping::get_or_use(versus_player, game_hash, Versus {
@@ -1063,12 +755,12 @@ transition mint_reward(private owner: address, private amount: u64) -> Reward {
     //============================================================================================
     //==================== MONOPOLY CHECK  GAME AGAINST OPPONENT ADDRESS =========================
     //============================================================================================
-    transition check_request(owner: address, opponent: address, game_hash: field) {
-        return then finalize(self.caller, opponent, game_hash);
+    async transition check_request(owner: address, opponent: address, game_hash: field) -> (Future) {
+        return (finalize_check_request(self.caller, opponent, game_hash));
     }
 
     //finalize  `player_request`
-    finalize check_request(owner: address, opponent: address, game_hash: field) {
+    async function finalize_check_request(owner: address, opponent: address, game_hash: field) {
         
         // init versus request
         let versus_request : Versus = Mapping::get_or_use(versus_player, game_hash, Versus {
@@ -1126,10 +818,143 @@ transition mint_reward(private owner: address, private amount: u64) -> Reward {
 
 
 
+  //==========================================================================
+   // ==================== tournament admin control ===========================
+   //==========================================================================
+    // Initialize the program after deployment.
+    async transition init_tournament(tournament_id: field, target_amt: u64, criteria_amt: u64, winners: u64, active: bool) -> (Future) {
+        return finalize_init_tournament(self.caller, tournament_id, target_amt, criteria_amt, winners, active);
+    }
+
+    async function finalize_init_tournament(caller: address, tournament_id: field, target_amt: u64, criteria_amt: u64, winners: u64, active: bool) {
+        // init global state
+        let gts: Tournament = Mapping::get_or_use(global_tournament_state, 123field, Tournament {
+            tournament_id: tournament_id, //monopoly game tournament name
+            target_amount: 0u64,
+            criteria_amount: 0u64,
+            winners: 0u64,
+            winners_active: false,
+            active: true,
+            admin: aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m
+        });
+        assert_eq(caller, gts.admin);
+
+        //tournament id for TOURNAMENT ID
+        //let TOUR_ID: field = ChaCha::rand_field();
+        Mapping::set(global_tournament_state, tournament_id, Tournament {
+            tournament_id: tournament_id, //monopoly game tournament name
+            target_amount: target_amt,
+            criteria_amount: criteria_amt,
+            winners: winners,
+            winners_active: false,
+            active: true,
+            admin: gts.admin
+        });
+    }
+
+
+
+
+
+
+
+
+
+   //==========================================================================
+   // ========================= tournament control ============================
+   //==========================================================================
+    // Initialize the program after deployment.
+    async transition tournament_game(owner: address) -> (Future){
+        return (finalize_tournament_game(owner));
+    }
+
+    async function finalize_tournament_game(owner: address) {
+        // init global state
+        let gts: Tournament = Mapping::get_or_use(global_tournament_state, 123field, Tournament {
+            tournament_id: 123field, //monopoly game tournament name
+            target_amount: 0u64,
+            criteria_amount: 0u64,
+            winners: 0u64,
+            winners_active: false,
+            active: true,
+            admin: aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m
+        });
+
+        assert_eq(gts.active, true); //make sure game is active
+        //assert_eq(owner, gts.gamer); //check if player match player tournament 
+
+        //check if user have reached criteria amount and have goal-match target amount in the game
+        let issue_exists: u64 = Mapping::get_or_use(account, owner, 0u64);
+        assert(issue_exists >= gts.target_amount && issue_exists >= gts.criteria_amount);
+
+        //check max winners if its up to selected winners selected
+        assert(gts.winners_active == false);
+        let add_winner: u64 = gts.winners - 1u64;
+
+        //check if there is still pace to claim, if winners reach 0u64, end tournament
+        assert(gts.winners > 0u64);
+        //then add reward to winners automatically if they check tournament to win otherwise revert
+        let tournament_reward: u64 = Mapping::get_or_use(get_reward, owner, 0u64);
+        Mapping::set(get_reward, owner, tournament_reward + 5000u64); //every tournament has a goal reward of 5000 token allocated to user reward mapped key
+       
+
+        Mapping::set(global_tournament_state, gts.tournament_id, Tournament {
+            tournament_id: gts.tournament_id, //monopoly game tournament name
+            target_amount: gts.target_amount,
+            criteria_amount: gts.criteria_amount,
+            winners: add_winner,
+            winners_active: true,
+            active: true,
+            admin: aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m
+        });
+    }
+
+
+
+   //==========================================================================
+   // =================== END tournament admin control  =======================
+   //==========================================================================
+   // Bug in this admin end control is that its manually controlled by admin,
+   // Admin must be active/online to end the tournament round
+
+    async transition end_tournament(tournament_id: field, b: bool) -> (Future) {
+        return finalize_end_tournament(tournament_id, self.caller);
+    }
+
+    async function finalize_end_tournament(tournament_id: field, caller: address) {
+        // init global state
+        let gts: Tournament = Mapping::get_or_use(global_tournament_state, 123field, Tournament {
+            tournament_id: 123field, //monopoly game tournament name
+            target_amount: 0u64,
+            criteria_amount: 0u64,
+            winners: 0u64,
+            winners_active: false,
+            active: true,
+            admin: aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m
+        });
+        //check if admin matched admin address
+        assert_eq(caller, gts.admin);
+
+        //check the assigned tournament id to be removed, other tournament remains...
+        assert_eq(tournament_id, gts.tournament_id);
+
+        //check if winners have reached climax before ending tournament game, otherwise game cannot end!
+        assert_eq(gts.winners, 0u64);
+
+        //REMOVE TOURNAMENT ID
+        Mapping::remove(global_tournament_state, gts.tournament_id);
+    }
+
+
+
+
+
+
+
     //==============================================================================================
     //======================= ADDING HASHED ADDRESS[OWNER + OPPONENT] ==============================
     //==============================================================================================
-    transition combine_owner_opponent_hash(private owner: address, private opponent: address) -> (Reveal_Versus) {
+    transition combine_owner_opponent_hash(owner: address, opponent: address) -> (Reveal_Versus) {
         //check that owner is self.caller
         assert_eq(owner, self.caller);
         //hash the owner address such that its not reveal the identity of owner address to public
@@ -1153,12 +978,12 @@ transition mint_reward(private owner: address, private amount: u64) -> Reward {
     //=============================================================================================
     //====================== MONOPOLY SEND TOKEN FROM ADMIN TO PLAYER =============================
     //=============================================================================================
-transition send_token(owner: address, to_address: address, amount: u64) -> (u64) {
+async transition send_token(owner: address, to_address: address, amount: u64) -> (u64, Future) {
         
-     return(amount) then finalize(self.caller, to_address, amount);
+     return(amount, finalize_send_token(owner, to_address, amount));
 }
      //================= MAPPING BALANCES TO ACCOUNT OWNER/TO_ADDRESS =======================
-        finalize send_token(owner: address, to_address: address, amount: u64) {
+        async function finalize_send_token(owner: address, to_address: address, amount: u64) {
         //make sure Only Admin can send
         assert_eq(owner, aleo1az8p9vlllyqwtj0c2g9svkd0e5v0p3zzdflwwrpa7kpe8xrfxgfqqpru7m);
         //check if admin have requested issue yet above amount, otherwise throw error
@@ -1168,13 +993,15 @@ transition send_token(owner: address, to_address: address, amount: u64) -> (u64)
         let issue_to_address: u64 = Mapping::get_or_use(account, to_address, 0u64);
 
         assert(issue_exists >= amount);
-
+        
+        let hash_receiver_field: field = Keccak512::hash_to_field(to_address);
         //checks if `to_addresssend` building had purchased the Building, if not revert()
-        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, to_address, BuildingInfo {
+        let building_info: BuildingInfo = Mapping::get_or_use(unique_building, hash_receiver_field, BuildingInfo {
             building_id: 123field,
             max_building: 0u64,
             receiver: to_address,
             building_price: 0u64,
+            total_building: 0u64,
         });
         assert(building_info.max_building >= 1u64);
 
@@ -1203,6 +1030,5 @@ transition send_token(owner: address, to_address: address, amount: u64) -> (u64)
 
         return (update_hash);
     }
-
 
 }
